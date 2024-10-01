@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: mmfask
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      authentication-database: admin
+      database: mmfask
+      auto-index-creation: true
+server:
+  port: 8222
