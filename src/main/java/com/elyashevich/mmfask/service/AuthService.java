@@ -5,5 +5,7 @@ import com.elyashevich.mmfask.entity.User;
 
 public interface AuthService {
 
-    User register(AuthRequestDto authRequestDto);
+    String register(final AuthRequestDto authRequestDto);
+
+    String login(final AuthRequestDto authRequestDto);
 }

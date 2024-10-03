@@ -7,6 +7,10 @@ import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.UserConverter;
 import com.elyashevich.mmfask.entity.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +19,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
@@ -39,5 +43,24 @@ public class UserServiceImpl implements UserService {
         candidate.setRoles(Set.of(Role.ROLE_USER));
         candidate.setPassword(this.passwordEncoder.encode(user.getPassword()));
         return this.userRepository.save(candidate);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return this.userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User with email: %s was not found.".formatted(email))
+        );
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = this.findByEmail(email);
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
+                        .toList()
+        );
     }
 }
