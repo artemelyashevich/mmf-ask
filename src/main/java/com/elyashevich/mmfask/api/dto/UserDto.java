@@ -1,9 +1,11 @@
 package com.elyashevich.mmfask.api.dto;
 
+import java.time.LocalDateTime;
+
 public record UserDto(
         String id,
         String email,
-        String createdAt,
-        String updatedAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
 }

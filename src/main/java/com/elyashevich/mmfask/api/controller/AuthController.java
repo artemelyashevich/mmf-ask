@@ -21,7 +21,6 @@ public class AuthController {
     @PostMapping("/register")
     public UserDto create(final @RequestBody AuthRequestDto authRequestDto){
         var user = this.authService.register(authRequestDto);
-        System.out.println(user);
         return this.userMapper.toDto(user);
     }
 }
