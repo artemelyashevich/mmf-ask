@@ -1,45 +1,40 @@
 package com.elyashevich.mmfask.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-@Document(collection = "users")
+@Document(collection = "posts")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = "password")
+@ToString
 @EqualsAndHashCode
-public class User {
+public class Post {
 
     @Id
     private String id;
 
-    @Indexed(unique = true)
-    private String email;
+    private String title;
 
-    private String password;
-
-    private Set<Role> roles;
+    private String description;
 
     @DBRef
-    private List<Post> posts;
+    private ProgrammingLanguage programmingLanguage;
+
+    @DBRef
+    private Set<Category> categories;
+
+    private Long views;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
