@@ -3,8 +3,11 @@ package com.elyashevich.mmfask.api.controller;
 import com.elyashevich.mmfask.api.dto.post.PostRequestDto;
 import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
+import com.elyashevich.mmfask.service.CategoryService;
 import com.elyashevich.mmfask.service.PostService;
+import com.elyashevich.mmfask.service.ProgrammingLanguageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +34,7 @@ public class PostController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public PostResponseDto create(final @Validated @RequestBody PostRequestDto dto) {
         var post = this.postService.create(this.postMapper.toEntity(dto));
         return this.postMapper.toDto(post);
@@ -46,6 +50,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(final @PathVariable("id") String id) {
         this.postService.delete(id);
     }

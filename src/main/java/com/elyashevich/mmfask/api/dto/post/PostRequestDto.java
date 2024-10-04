@@ -1,7 +1,6 @@
 package com.elyashevich.mmfask.api.dto.post;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Set;
@@ -31,6 +30,8 @@ public record PostRequestDto(
         String programmingLanguageName,
 
         @NotNull(message = "Names of categories must be not empty.")
-        Set<String> namesOfCategories
+        Set<String> namesOfCategories,
+
+        Long views
 ) {
 }

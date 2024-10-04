@@ -4,6 +4,7 @@ import com.elyashevich.mmfask.api.dto.category.CategoryDto;
 import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class CategoryController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto create(final @Validated @RequestBody CategoryDto categoryDto) {
         var category = this.categoryService.create(this.categoryMapper.toEntity(categoryDto));
         return this.categoryMapper.toDto(category);
@@ -45,6 +47,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(final @PathVariable("id") String id) {
         this.categoryService.delete(id);
     }
