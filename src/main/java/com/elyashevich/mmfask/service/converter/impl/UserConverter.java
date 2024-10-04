@@ -1,6 +1,6 @@
 package com.elyashevich.mmfask.service.converter.impl;
 
-import com.elyashevich.mmfask.api.dto.AuthRequestDto;
+import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.entity.User;
 import com.elyashevich.mmfask.service.converter.Converter;
 import org.springframework.stereotype.Component;

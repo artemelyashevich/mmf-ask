@@ -1,7 +1,7 @@
 package com.elyashevich.mmfask.api.controller;
 
-import com.elyashevich.mmfask.api.dto.AuthRequestDto;
-import com.elyashevich.mmfask.api.dto.AuthResponseDto;
+import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
+import com.elyashevich.mmfask.api.dto.auth.AuthResponseDto;
 import com.elyashevich.mmfask.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

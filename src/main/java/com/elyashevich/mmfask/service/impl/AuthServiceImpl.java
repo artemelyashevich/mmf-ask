@@ -1,6 +1,6 @@
 package com.elyashevich.mmfask.service.impl;
 
-import com.elyashevich.mmfask.api.dto.AuthRequestDto;
+import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.exception.InvalidPasswordException;
 import com.elyashevich.mmfask.service.AuthService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;

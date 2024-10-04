@@ -11,7 +11,7 @@ import java.util.List;
 public class UserMapperImpl implements UserMapper {
 
     @Override
-    public UserDto toDto(User entity) {
+    public UserDto toDto(final User entity) {
         return new UserDto(
                 entity.getId(),
                 entity.getEmail(),
@@ -21,14 +21,14 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public List<UserDto> toDto(List<User> entities) {
+    public List<UserDto> toDto(final List<User> entities) {
         return entities.stream()
                 .map(this::toDto)
                 .toList();
     }
 
     @Override
-    public User toEntity(UserDto dto) {
+    public User toEntity(final UserDto dto) {
         return User.builder()
                 .email(dto.email())
                 .build();
