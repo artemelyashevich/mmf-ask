@@ -11,16 +11,27 @@ import java.util.List;
 public class ProgrammingLanguageMapperImpl implements ProgrammingLanguageMapper {
     @Override
     public ProgrammingLanguageDto toDto(final ProgrammingLanguage entity) {
-        return null;
+        return new ProgrammingLanguageDto(entity.getId(), entity.getName());
     }
 
     @Override
     public List<ProgrammingLanguageDto> toDto(final List<ProgrammingLanguage> entities) {
-        return null;
+        return entities.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
     public ProgrammingLanguage toEntity(final ProgrammingLanguageDto dto) {
-        return null;
+        return ProgrammingLanguage.builder()
+                .name(dto.name())
+                .build();
+    }
+
+    @Override
+    public ProgrammingLanguage toEntityFromString(String name) {
+        return ProgrammingLanguage.builder()
+                .name(name)
+                .build();
     }
 }

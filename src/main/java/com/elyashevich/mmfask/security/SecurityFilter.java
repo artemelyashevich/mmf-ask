@@ -1,6 +1,5 @@
 package com.elyashevich.mmfask.security;
 
-import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +23,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
+
     @Override
     protected void doFilterInternal(
             @NonNull final HttpServletRequest request,

@@ -2,22 +2,41 @@ package com.elyashevich.mmfask.api.mapper.impl;
 
 import com.elyashevich.mmfask.api.dto.post.PostRequestDto;
 import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
+import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
+import com.elyashevich.mmfask.api.mapper.ProgrammingLanguageMapper;
 import com.elyashevich.mmfask.entity.Post;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class PostMapperImpl implements PostMapper {
+
+    private final CategoryMapper categoryMapper;
+    private final ProgrammingLanguageMapper programmingLanguageMapper;
+
     @Override
     public PostResponseDto toDto(final Post entity) {
-        return null;
+        return new PostResponseDto(
+                entity.getId(),
+                entity.getTitle(),
+                entity.getDescription(),
+                this.programmingLanguageMapper.toDto(entity.getProgrammingLanguage()),
+                this.categoryMapper.toDto(entity.getCategories()),
+                entity.getViews(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
     }
 
     @Override
     public List<PostResponseDto> toDto(final List<Post> entities) {
-        return null;
+        return entities.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
@@ -27,6 +46,12 @@ public class PostMapperImpl implements PostMapper {
 
     @Override
     public Post toEntity(final PostRequestDto dto) {
-        return null;
+        return Post.builder()
+                .title(dto.title())
+                .description(dto.description())
+                .categories(this.categoryMapper.toEntityFromStrings(dto.namesOfCategories()))
+                .programmingLanguage(this.programmingLanguageMapper.toEntityFromString(dto.programmingLanguageName()))
+                .views(dto.views())
+                .build();
     }
 }

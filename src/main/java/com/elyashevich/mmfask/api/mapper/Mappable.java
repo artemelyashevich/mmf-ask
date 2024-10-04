@@ -2,7 +2,7 @@ package com.elyashevich.mmfask.api.mapper;
 
 import java.util.List;
 
-public interface Mappable <E, D>{
+public interface Mappable<E, D> {
 
     D toDto(final E entity);
 
