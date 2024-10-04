@@ -1,6 +1,6 @@
 package com.elyashevich.mmfask.api.mapper.impl;
 
-import com.elyashevich.mmfask.api.dto.UserDto;
+import com.elyashevich.mmfask.api.dto.user.UserDto;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.entity.User;
 import org.springframework.stereotype.Component;

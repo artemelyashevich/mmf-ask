@@ -1,4 +1,4 @@
-package com.elyashevich.mmfask.api.dto;
+package com.elyashevich.mmfask.api.dto.user;
 
 import java.time.LocalDateTime;
 

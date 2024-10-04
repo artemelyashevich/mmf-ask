@@ -1,6 +1,6 @@
 package com.elyashevich.mmfask.api.controller;
 
-import com.elyashevich.mmfask.api.dto.UserDto;
+import com.elyashevich.mmfask.api.dto.user.UserDto;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
