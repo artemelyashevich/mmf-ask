@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "api/v1/auth/*").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/programming-languages/**").permitAll()
