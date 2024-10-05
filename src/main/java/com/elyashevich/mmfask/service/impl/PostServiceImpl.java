@@ -47,26 +47,14 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Post create(final Post dto) {
-        var categories = dto.getCategories().stream()
-                .map(category -> this.categoryService.findByName(category.getName()))
-                        .collect(Collectors.toSet());
-        var programmingLanguage = this.programmingLanguageService.findByName(dto.getProgrammingLanguage().getName());
-        dto.setCategories(categories);
-        dto.setProgrammingLanguage(programmingLanguage);
-        return this.postRepository.save(dto);
+        return this.postRepository.save(this.setDataToDto(dto));
     }
 
     @Transactional
     @Override
     public Post update(final String id, final Post dto) {
         var candidate = this.findById(id);
-        var categories = dto.getCategories().stream()
-                .map(category -> this.categoryService.findByName(category.getName()))
-                .collect(Collectors.toSet());
-        var programmingLanguage = this.programmingLanguageService.findByName(dto.getProgrammingLanguage().getName());
-        dto.setCategories(categories);
-        dto.setProgrammingLanguage(programmingLanguage);
-        var post = this.converter.update(candidate, dto);
+        var post = this.converter.update(candidate, this.setDataToDto(dto));
         return this.postRepository.save(post);
     }
 
@@ -75,5 +63,16 @@ public class PostServiceImpl implements PostService {
     public void delete(final String id) {
         var candidate = this.findById(id);
         this.postRepository.delete(candidate);
+    }
+
+    @Transactional
+    protected Post setDataToDto(Post dto) {
+        var categories = dto.getCategories().stream()
+                .map(category -> this.categoryService.findByName(category.getName()))
+                .collect(Collectors.toSet());
+        var programmingLanguage = this.programmingLanguageService.findByName(dto.getProgrammingLanguage().getName());
+        dto.setCategories(categories);
+        dto.setProgrammingLanguage(programmingLanguage);
+        return dto;
     }
 }

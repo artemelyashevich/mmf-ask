@@ -22,6 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
+    private static final String ROLE_USER = "USER";
+    private static final String MODERATOR_ROLE = "MODERATOR";
+    private static final String ROLE_ADMIN = "ADMIN";
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
@@ -29,19 +32,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "api/v1/auth/*").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/programming-languages/**").permitAll()
-                                .requestMatchers("api/v1/posts/**").hasRole("USER")
-                                .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.DELETE, "api/v1/categories/**").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.POST, "api/v1/programming-languages").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.PUT, "api/v1/programming-languages/**").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.DELETE, "api/v1/programming-languages/**").hasRole("MODERATOR")
-                                .requestMatchers(HttpMethod.DELETE, "api/v1/users/*").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "api/v1/users/*").hasRole("ADMIN")
+                                .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
+                                .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.DELETE, "api/v1/categories/**").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.POST, "api/v1/programming-languages").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.PUT, "api/v1/programming-languages/**").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.DELETE, "api/v1/programming-languages/**").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.DELETE, "api/v1/users/*").hasRole(ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.PUT, "api/v1/users/*").hasRole(ROLE_ADMIN)
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
