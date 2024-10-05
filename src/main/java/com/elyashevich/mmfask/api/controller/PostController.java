@@ -54,9 +54,9 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public PostResponseDto uploadImage(
             final @PathVariable("id") String id,
-            final @RequestParam("files") MultipartFile file
+            final @RequestParam("files") MultipartFile[] files
     ) throws Exception {
-        var post = this.postService.uploadFile(id, file);
+        var post = this.postService.uploadFile(id, files);
         return this.postMapper.toDto(post);
     }
 

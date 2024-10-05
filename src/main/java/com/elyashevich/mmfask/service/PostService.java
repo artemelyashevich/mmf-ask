@@ -60,10 +60,10 @@ public interface PostService {
     /**
      * Uploads a file for a specific post.
      *
-     * @param id the ID of the post to upload the file for
-     * @param file the multipart file to upload
+     * @param id    the ID of the post to upload the file for
+     * @param files the multipart file to upload
      * @return the updated post with the uploaded file
      * @throws Exception if an error occurs during file upload
      */
-    Post uploadFile(final String id, final MultipartFile file) throws Exception;
+    Post uploadFile(final String id, final MultipartFile[] files) throws Exception;
 }

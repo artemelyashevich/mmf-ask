@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,15 +79,21 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post uploadFile(final String id, final MultipartFile file) throws Exception {
+    public Post uploadFile(final String id, final MultipartFile[] files) throws Exception {
         log.debug("Attempting to upload image to post with ID '{}'.", id);
 
-        var attachment = this.attachmentService.create(file);
         var post = this.findById(id);
         var images = post.getAttachmentImages() != null
                 ? post.getAttachmentImages()
                 : new HashSet<AttachmentImage>();
-        images.add(attachment);
+        Arrays.stream(files).forEach(file -> {
+            try {
+                images.add(this.attachmentService.create(file));
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Something went wrong.");
+            }
+        });
         post.setAttachmentImages(images);
         var updatedPost = this.postRepository.save(post);
 
