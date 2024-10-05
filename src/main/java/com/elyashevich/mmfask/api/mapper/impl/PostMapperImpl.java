@@ -8,8 +8,10 @@ import com.elyashevich.mmfask.api.mapper.ProgrammingLanguageMapper;
 import com.elyashevich.mmfask.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +29,15 @@ public class PostMapperImpl implements PostMapper {
                 this.programmingLanguageMapper.toDto(entity.getProgrammingLanguage()),
                 this.categoryMapper.toDto(entity.getCategories()),
                 entity.getViews(),
+                entity.getAttachmentImages()
+                        .stream()
+                        .map(image ->
+                                ServletUriComponentsBuilder.fromCurrentContextPath()
+                                        .path("/api/v1/images/")
+                                        .path(image.getId())
+                                        .toUriString()
+                        )
+                        .collect(Collectors.toSet()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

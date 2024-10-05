@@ -3,6 +3,7 @@ package com.elyashevich.mmfask.api.controller;
 import com.elyashevich.mmfask.api.dto.post.PostRequestDto;
 import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
+import com.elyashevich.mmfask.service.AttachmentService;
 import com.elyashevich.mmfask.service.CategoryService;
 import com.elyashevich.mmfask.service.PostService;
 import com.elyashevich.mmfask.service.ProgrammingLanguageService;
@@ -10,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -37,6 +41,17 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public PostResponseDto create(final @Validated @RequestBody PostRequestDto dto) {
         var post = this.postService.create(this.postMapper.toEntity(dto));
+        post.setAttachmentImages(new HashSet<>());
+        return this.postMapper.toDto(post);
+    }
+
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PostResponseDto uploadImage(
+            final @PathVariable("id") String id,
+            final @RequestParam("files") MultipartFile file
+    ) throws Exception {
+        var post = this.postService.uploadFile(id, file);
         return this.postMapper.toDto(post);
     }
 

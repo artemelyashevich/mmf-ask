@@ -1,8 +1,10 @@
 package com.elyashevich.mmfask.service.impl;
 
+import com.elyashevich.mmfask.entity.AttachmentImage;
 import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.PostRepository;
+import com.elyashevich.mmfask.service.AttachmentService;
 import com.elyashevich.mmfask.service.CategoryService;
 import com.elyashevich.mmfask.service.PostService;
 import com.elyashevich.mmfask.service.ProgrammingLanguageService;
@@ -10,7 +12,9 @@ import com.elyashevich.mmfask.service.converter.impl.PostConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +26,7 @@ public class PostServiceImpl implements PostService {
     private final PostConverter converter;
     private final CategoryService categoryService;
     private final ProgrammingLanguageService programmingLanguageService;
+    private final AttachmentService attachmentService;
 
     @Override
     public List<Post> findAll() {
@@ -47,6 +52,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Post create(final Post dto) {
+        dto.setAttachmentImages(new HashSet<>());
         return this.postRepository.save(this.setDataToDto(dto));
     }
 
@@ -66,7 +72,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Transactional
-    protected Post setDataToDto(Post dto) {
+    protected Post setDataToDto(final Post dto) {
         var categories = dto.getCategories().stream()
                 .map(category -> this.categoryService.findByName(category.getName()))
                 .collect(Collectors.toSet());
@@ -74,5 +80,18 @@ public class PostServiceImpl implements PostService {
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
         return dto;
+    }
+
+    @Transactional
+    @Override
+    public Post uploadFile(final String id, final MultipartFile file) throws Exception {
+        var attachment = this.attachmentService.create(file);
+        var post = this.findById(id);
+        var images = post.getAttachmentImages() != null
+                ? post.getAttachmentImages()
+                : new HashSet<AttachmentImage>();
+        images.add(attachment);
+        post.setAttachmentImages(images);
+        return this.postRepository.save(post);
     }
 }
