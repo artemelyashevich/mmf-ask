@@ -5,6 +5,7 @@ import com.elyashevich.mmfask.entity.User;
 import com.elyashevich.mmfask.exception.ResourceAlreadyExistsException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.UserRepository;
+import com.elyashevich.mmfask.service.AttachmentService;
 import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
+    private final AttachmentService attachmentService;
 
     @Override
     public List<User> findAll() {
@@ -46,6 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new ResourceAlreadyExistsException("User with email = %s already exists".formatted(user.getEmail()));
         }
         var candidate = this.userConverter.update(new User(), user);
+        candidate.setImage(null);
         candidate.setRoles(Set.of(Role.ROLE_USER));
         candidate.setPassword(this.passwordEncoder.encode(user.getPassword()));
         return this.userRepository.save(candidate);
@@ -56,6 +60,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return this.userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("User with email: %s was not found.".formatted(email))
         );
+    }
+
+    @Override
+    public User uploadImage(String id, MultipartFile file) throws Exception {
+        var user = this.findById(id);
+        var image = this.attachmentService.create(file);
+        user.setImage(image);
+        return this.userRepository.save(user);
     }
 
     @Override

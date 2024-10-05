@@ -33,10 +33,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "api/v1/auth/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/images/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/programming-languages/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_USER)
+                                .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_USER)
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(MODERATOR_ROLE)
                                 .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(MODERATOR_ROLE)
