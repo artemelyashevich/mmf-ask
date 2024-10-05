@@ -1,6 +1,5 @@
 package com.elyashevich.mmfask.service.converter.impl;
 
-import com.elyashevich.mmfask.api.dto.post.PostRequestDto;
 import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.service.converter.Converter;
 import org.springframework.stereotype.Component;

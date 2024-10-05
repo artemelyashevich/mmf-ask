@@ -1,6 +1,15 @@
 package com.elyashevich.mmfask.exception;
 
-public class ResourceAlreadyExistsException extends RuntimeException{
+/**
+ * Custom exception for resource already existing.
+ */
+public class ResourceAlreadyExistsException extends RuntimeException {
+
+    /**
+     * Constructs a ResourceAlreadyExistsException with the specified detail message.
+     *
+     * @param message the detail message
+     */
     public ResourceAlreadyExistsException(String message) {
         super(message);
     }

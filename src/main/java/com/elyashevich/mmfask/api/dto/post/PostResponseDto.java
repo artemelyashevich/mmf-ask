@@ -2,8 +2,6 @@ package com.elyashevich.mmfask.api.dto.post;
 
 import com.elyashevich.mmfask.api.dto.category.CategoryDto;
 import com.elyashevich.mmfask.api.dto.programmingLanguage.ProgrammingLanguageDto;
-import com.elyashevich.mmfask.entity.AttachmentImage;
-import com.elyashevich.mmfask.service.AttachmentService;
 
 import java.time.LocalDateTime;
 import java.util.Set;

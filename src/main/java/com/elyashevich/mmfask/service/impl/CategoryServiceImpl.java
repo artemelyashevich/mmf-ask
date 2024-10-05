@@ -7,11 +7,13 @@ import com.elyashevich.mmfask.repository.CategoryRepository;
 import com.elyashevich.mmfask.service.CategoryService;
 import com.elyashevich.mmfask.service.converter.impl.CategoryConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -43,25 +45,39 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public Category create(final Category dto) {
+        log.debug("Attempting to create a category with name '{}'.", dto.getName());
+
         var name = dto.getName();
         if (this.categoryRepository.existsByName(name)) {
             throw new ResourceAlreadyExistsException("Category with name = %s already exists.".formatted(name));
         }
-        return this.categoryRepository.save(dto);
+        var category = this.categoryRepository.save(dto);
+
+        log.info("Category with name '{}' has been created.", dto.getName());
+        return category;
     }
 
     @Transactional
     @Override
     public Category update(final String id, final Category dto) {
+        log.debug("Attempting to update a category with name '{}'.", dto.getName());
+
         var candidate = this.findById(id);
         var category = this.converter.update(candidate, dto);
-        return this.categoryRepository.save(category);
+        var updatedCategory = this.categoryRepository.save(category);
+
+        log.info("Category with name '{}' has been updated.", dto.getName());
+        return updatedCategory;
     }
 
     @Transactional
     @Override
     public void delete(final String id) {
+        log.debug("Attempting to delete a category with ID '{}'.", id);
+
         var candidate = this.findById(id);
         this.categoryRepository.delete(candidate);
+
+        log.info("Category with ID '{}' has been deleted.", id);
     }
 }

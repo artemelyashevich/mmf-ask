@@ -9,6 +9,7 @@ import com.elyashevich.mmfask.service.AttachmentService;
 import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -42,19 +44,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         );
     }
 
-    @Transactional
-    @Override
-    public User create(final User user) {
-        if (this.userRepository.existsByEmail(user.getEmail())) {
-            throw new ResourceAlreadyExistsException("User with email = %s already exists".formatted(user.getEmail()));
-        }
-        var candidate = this.userConverter.update(new User(), user);
-        candidate.setImage(null);
-        candidate.setRoles(Set.of(Role.ROLE_USER));
-        candidate.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        return this.userRepository.save(candidate);
-    }
-
     @Override
     public User findByEmail(final String email) {
         return this.userRepository.findByEmail(email).orElseThrow(
@@ -62,12 +51,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         );
     }
 
+    @Transactional
+    @Override
+    public User create(final User user) {
+        log.debug("Attempting to create a new user with email '{}'.", user.getEmail());
+
+        if (this.userRepository.existsByEmail(user.getEmail())) {
+            throw new ResourceAlreadyExistsException("User with email = %s already exists".formatted(user.getEmail()));
+        }
+        var candidate = this.userConverter.update(new User(), user);
+        candidate.setImage(null);
+        candidate.setRoles(Set.of(Role.ROLE_USER));
+        candidate.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        var newUser = this.userRepository.save(candidate);
+
+        log.info("User with email '{}' has been created.", user.getEmail());
+        return newUser;
+    }
+
     @Override
     public User uploadImage(String id, MultipartFile file) throws Exception {
+        log.debug("Attempting to upload image to user with ID '{}'.", id);
+
         var user = this.findById(id);
         var image = this.attachmentService.create(file);
         user.setImage(image);
-        return this.userRepository.save(user);
+        var updatedUser = this.userRepository.save(user);
+
+        log.info("User with ID '{}' has been updated.", id);
+        return updatedUser;
     }
 
     @Override

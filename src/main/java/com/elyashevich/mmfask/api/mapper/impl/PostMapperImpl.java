@@ -6,9 +6,9 @@ import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
 import com.elyashevich.mmfask.api.mapper.ProgrammingLanguageMapper;
 import com.elyashevich.mmfask.entity.Post;
+import com.elyashevich.mmfask.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,12 +31,7 @@ public class PostMapperImpl implements PostMapper {
                 entity.getViews(),
                 entity.getAttachmentImages()
                         .stream()
-                        .map(image ->
-                                ServletUriComponentsBuilder.fromCurrentContextPath()
-                                        .path("/api/v1/images/")
-                                        .path(image.getId())
-                                        .toUriString()
-                        )
+                        .map(ImageUtil::generatePath)
                         .collect(Collectors.toSet()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()

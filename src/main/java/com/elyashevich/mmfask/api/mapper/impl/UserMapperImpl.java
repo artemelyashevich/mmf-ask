@@ -3,8 +3,8 @@ package com.elyashevich.mmfask.api.mapper.impl;
 import com.elyashevich.mmfask.api.dto.user.UserDto;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.entity.User;
+import com.elyashevich.mmfask.util.ImageUtil;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -13,16 +13,10 @@ public class UserMapperImpl implements UserMapper {
 
     @Override
     public UserDto toDto(final User entity) {
-        var imagePath = entity.getImage() != null
-                ? ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/v1/images/")
-                .path(entity.getImage().getId())
-                .toUriString()
-                : null;
         return new UserDto(
                 entity.getId(),
                 entity.getEmail(),
-                imagePath,
+                ImageUtil.generatePath(entity.getImage()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

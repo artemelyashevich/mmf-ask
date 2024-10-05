@@ -10,6 +10,7 @@ import com.elyashevich.mmfask.service.PostService;
 import com.elyashevich.mmfask.service.ProgrammingLanguageService;
 import com.elyashevich.mmfask.service.converter.impl.PostConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -52,23 +54,55 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Post create(final Post dto) {
+        log.debug("Attempting to create a new post with title '{}'.", dto.getTitle());
+
         dto.setAttachmentImages(new HashSet<>());
-        return this.postRepository.save(this.setDataToDto(dto));
+        var post = this.postRepository.save(this.setDataToDto(dto));
+
+        log.info("Post with name '{}' has been created.", dto.getTitle());
+        return post;
     }
 
     @Transactional
     @Override
     public Post update(final String id, final Post dto) {
+        log.debug("Attempting to update a post with ID '{}'.", dto.getId());
+
         var candidate = this.findById(id);
         var post = this.converter.update(candidate, this.setDataToDto(dto));
-        return this.postRepository.save(post);
+        var updatedPost = this.postRepository.save(post);
+
+        log.info("Post with ID '{}' has been updated.", dto.getId());
+        return updatedPost;
+    }
+
+    @Transactional
+    @Override
+    public Post uploadFile(final String id, final MultipartFile file) throws Exception {
+        log.debug("Attempting to upload image to post with ID '{}'.", id);
+
+        var attachment = this.attachmentService.create(file);
+        var post = this.findById(id);
+        var images = post.getAttachmentImages() != null
+                ? post.getAttachmentImages()
+                : new HashSet<AttachmentImage>();
+        images.add(attachment);
+        post.setAttachmentImages(images);
+        var updatedPost = this.postRepository.save(post);
+
+        log.info("Post with ID '{}' has been updated.", id);
+        return updatedPost;
     }
 
     @Transactional
     @Override
     public void delete(final String id) {
+        log.debug("Attempting to delete a post with id '{}'.", id);
+
         var candidate = this.findById(id);
         this.postRepository.delete(candidate);
+
+        log.info("Post with id '{}' has been deleted.", id);
     }
 
     @Transactional
@@ -80,18 +114,5 @@ public class PostServiceImpl implements PostService {
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
         return dto;
-    }
-
-    @Transactional
-    @Override
-    public Post uploadFile(final String id, final MultipartFile file) throws Exception {
-        var attachment = this.attachmentService.create(file);
-        var post = this.findById(id);
-        var images = post.getAttachmentImages() != null
-                ? post.getAttachmentImages()
-                : new HashSet<AttachmentImage>();
-        images.add(attachment);
-        post.setAttachmentImages(images);
-        return this.postRepository.save(post);
     }
 }

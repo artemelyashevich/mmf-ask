@@ -5,12 +5,13 @@ import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.AttachmentImageRepository;
 import com.elyashevich.mmfask.service.AttachmentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AttachmentServiceImpl implements AttachmentService {
@@ -32,13 +33,9 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public void delete(final String id) {
-        var image = this.findById(id);
-        this.attachmentImageRepository.delete(image);
-    }
-
-    @Override
     public AttachmentImage create(final MultipartFile file) throws Exception {
+        log.debug("Attempting to create a new image");
+
         var fileName = UUID.randomUUID() + file.getOriginalFilename();
         try {
             var attachment = AttachmentImage.builder()
@@ -46,10 +43,23 @@ public class AttachmentServiceImpl implements AttachmentService {
                     .filetype(file.getContentType())
                     .bytes(file.getBytes())
                     .build();
-            return this.attachmentImageRepository.save(attachment);
+            var image = this.attachmentImageRepository.save(attachment);
+
+            log.info("Image with ID '{}' has been created.", attachment.getId());
+            return image;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Could not save File: " + fileName);
         }
+    }
+
+    @Override
+    public void delete(final String id) {
+        log.debug("Attempting to delete the image with ID '{}'.", id);
+
+        var image = this.findById(id);
+        this.attachmentImageRepository.delete(image);
+
+        log.info("Image with ID '{}' has been deleted.", id);
     }
 }
