@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class CategoryMapperImpl implements CategoryMapper {
+
     @Override
     public CategoryDto toDto(final Category entity) {
         return new CategoryDto(entity.getId(), entity.getName());

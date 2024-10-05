@@ -9,6 +9,7 @@ import java.util.List;
 
 @Component
 public class ProgrammingLanguageMapperImpl implements ProgrammingLanguageMapper {
+
     @Override
     public ProgrammingLanguageDto toDto(final ProgrammingLanguage entity) {
         return new ProgrammingLanguageDto(entity.getId(), entity.getName());

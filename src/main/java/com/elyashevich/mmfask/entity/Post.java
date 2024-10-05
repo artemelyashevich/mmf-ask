@@ -41,6 +41,9 @@ public class Post {
 
     private Long views;
 
+    @DBRef
+    private Set<AttachmentImage> attachmentImages;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @CreatedDate

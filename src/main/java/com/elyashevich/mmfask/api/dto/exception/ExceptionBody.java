@@ -13,7 +13,6 @@ import java.util.Map;
 public class ExceptionBody {
 
     private final String message;
-
     private final Map<String, String> errors;
 
     public ExceptionBody(String message) {

@@ -20,6 +20,8 @@ public record PostResponseDto(
 
         Long views,
 
+        Set<String> images,
+
         LocalDateTime createdAt,
 
         LocalDateTime updatedAt

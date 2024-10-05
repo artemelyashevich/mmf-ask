@@ -20,14 +20,14 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthResponseDto create(final @RequestBody AuthRequestDto authRequestDto){
+    public AuthResponseDto create(final @RequestBody AuthRequestDto authRequestDto) {
         var token = this.authService.register(authRequestDto);
         return new AuthResponseDto(token);
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthResponseDto login(final @RequestBody AuthRequestDto authRequestDto){
+    public AuthResponseDto login(final @RequestBody AuthRequestDto authRequestDto) {
         var token = this.authService.login(authRequestDto);
         return new AuthResponseDto(token);
     }
