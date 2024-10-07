@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
     private static final String ROLE_USER = "USER";
-    private static final String MODERATOR_ROLE = "MODERATOR";
+    private static final String ROLE_MODERATOR = "MODERATOR";
     private static final String ROLE_ADMIN = "ADMIN";
 
     @Bean
@@ -39,12 +39,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_USER)
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
-                                .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(MODERATOR_ROLE)
-                                .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(MODERATOR_ROLE)
-                                .requestMatchers(HttpMethod.DELETE, "api/v1/categories/**").hasRole(MODERATOR_ROLE)
-                                .requestMatchers(HttpMethod.POST, "api/v1/programming-languages").hasRole(MODERATOR_ROLE)
-                                .requestMatchers(HttpMethod.PUT, "api/v1/programming-languages/**").hasRole(MODERATOR_ROLE)
-                                .requestMatchers(HttpMethod.DELETE, "api/v1/programming-languages/**").hasRole(MODERATOR_ROLE)
+                                .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.DELETE, "api/v1/categories/**").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.POST, "api/v1/programming-languages").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.PUT, "api/v1/programming-languages/**").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.DELETE, "api/v1/programming-languages/**").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.DELETE, "api/v1/users/*").hasRole(ROLE_ADMIN)
                                 .requestMatchers(HttpMethod.PUT, "api/v1/users/*").hasRole(ROLE_ADMIN)
                                 .anyRequest().authenticated()
