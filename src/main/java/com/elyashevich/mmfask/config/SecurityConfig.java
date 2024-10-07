@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
+    private static final String ROLE_GUEST = "GUEST";
     private static final String ROLE_USER = "USER";
     private static final String ROLE_MODERATOR = "MODERATOR";
     private static final String ROLE_ADMIN = "ADMIN";
@@ -32,13 +33,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "api/v1/auth/*").permitAll()
-                                .requestMatchers("api/v1/mail").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/programming-languages/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_USER)
-                                .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_USER)
+                                .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_GUEST)
+                                .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_GUEST)
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(ROLE_MODERATOR)

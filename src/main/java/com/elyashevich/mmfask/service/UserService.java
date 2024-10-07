@@ -41,6 +41,8 @@ public interface UserService {
      */
     User findByEmail(final String email);
 
+    User activate(final String email);
+
     /**
      * Uploads an image for a specific user.
      *

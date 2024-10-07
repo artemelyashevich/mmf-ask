@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.util.Map;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class MailServiceImpl implements MailService {
     private String senderText;
 
     @Override
-    public void sendMessage(String receiver) throws MessagingException {
+    public void sendMessage(final String receiver, String activationCode) throws MessagingException {
         MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(
                 mimeMessage,
@@ -41,8 +39,7 @@ public class MailServiceImpl implements MailService {
         Context context = new Context();
         context.setVariables(Map.of(
                 "username", receiver,
-                "confirmationUrl", "example.com",
-                "activation_code", this.generateActivationToken()
+                "activation_code", activationCode
         ));
 
         helper.setFrom(senderEmail);
@@ -56,14 +53,5 @@ public class MailServiceImpl implements MailService {
         this.javaMailSender.send(mimeMessage);
     }
 
-    private String generateActivationToken() {
-        var characters = "0123456789";
-        var tokenBuilder = new StringBuilder();
-        var random = new Random();
-        for (int i = 0; i < 6; i++) {
-            int randomIndex = random.nextInt(characters.length());
-            tokenBuilder.append(characters.charAt(randomIndex));
-        }
-        return tokenBuilder.toString();
-    }
+
 }
