@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST, "api/v1/auth/*").permitAll()
+                                .requestMatchers("api/v1/mail").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
