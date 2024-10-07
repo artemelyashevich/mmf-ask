@@ -51,6 +51,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         );
     }
 
+    @Override
+    public User activate(final String email) {
+        var user = this.findByEmail(email);
+        var roles = user.getRoles();
+        roles.add(Role.ROLE_USER);
+        user.setRoles(roles);
+        return this.userRepository.save(user);
+    }
+
     @Transactional
     @Override
     public User create(final User user) {
@@ -61,8 +70,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         var candidate = this.userConverter.update(new User(), user);
         candidate.setImage(null);
-        candidate.setRoles(Set.of(Role.ROLE_USER));
+        candidate.setRoles(Set.of(Role.ROLE_GUEST));
         candidate.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        candidate.setActivationCode(user.getActivationCode());
         var newUser = this.userRepository.save(candidate);
 
         log.info("User with email '{}' has been created.", user.getEmail());
