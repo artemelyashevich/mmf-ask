@@ -2,6 +2,8 @@ package com.elyashevich.mmfask.service.impl;
 
 import com.elyashevich.mmfask.entity.Role;
 import com.elyashevich.mmfask.entity.User;
+import com.elyashevich.mmfask.exception.InvalidPasswordException;
+import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.exception.ResourceAlreadyExistsException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.UserRepository;
@@ -79,8 +81,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return newUser;
     }
 
+    @Transactional
     @Override
-    public User uploadImage(String id, MultipartFile file) throws Exception {
+    public User uploadImage(final String id, final MultipartFile file) throws Exception {
         log.debug("Attempting to upload image to user with ID '{}'.", id);
 
         var user = this.findById(id);
@@ -90,6 +93,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         log.info("User with ID '{}' has been updated.", id);
         return updatedUser;
+    }
+
+    @Override
+    public User resetPassword(
+            final String email,
+            final String code,
+            final String oldPassword,
+            final String newPassword
+    ) {
+        var user = this.findByEmail(email);
+        if (!user.getActivationCode().equals(code)) {
+            throw new InvalidTokenException("Invalid reset code.");
+        }
+        if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new InvalidPasswordException("Password mismatch.");
+        }
+        user.setPassword(this.passwordEncoder.encode(newPassword));
+        return this.userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void setActivationCode(final String email, final String resetCode) {
+        var user = this.findByEmail(email);
+        user.setActivationCode(resetCode);
+        this.userRepository.save(user);
     }
 
     @Override

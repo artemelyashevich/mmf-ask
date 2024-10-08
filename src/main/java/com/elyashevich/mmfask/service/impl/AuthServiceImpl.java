@@ -1,6 +1,7 @@
 package com.elyashevich.mmfask.service.impl;
 
 import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
+import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import com.elyashevich.mmfask.exception.InvalidPasswordException;
 import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.service.AuthService;
@@ -10,7 +11,9 @@ import com.elyashevich.mmfask.util.TokenUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,9 @@ public class AuthServiceImpl implements AuthService {
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
 
+    private final static String PATH_TO_RESET_PASSWORD = "reset_password";
+    private final static String PATH_TO_ACTIVATE_ACCOUNT = "activate_account";
+
     @Transactional
     @Override
     public void register(final AuthRequestDto authRequestDto) throws MessagingException {
@@ -35,9 +41,10 @@ public class AuthServiceImpl implements AuthService {
 
         var candidate = this.userConverter.fromAuthDto(authRequestDto);
         var activationCode = generateActivationToken();
+        System.out.println(activationCode);
         candidate.setActivationCode(activationCode);
         this.userService.create(candidate);
-        this.mailService.sendMessage(authRequestDto.email(), activationCode);
+        this.mailService.sendMessage(authRequestDto.email(), activationCode, PATH_TO_ACTIVATE_ACCOUNT);
 
         log.info("User with email '{}' has been registered.", authRequestDto.email());
     }
@@ -65,6 +72,27 @@ public class AuthServiceImpl implements AuthService {
         this.userService.activate(email);
         var userDetails = this.userService.loadUserByUsername(email);
         return generateToken(userDetails);
+    }
+
+    @Override
+    public void sendResetPasswordCode() throws MessagingException {
+        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        var resetCode = generateActivationToken();
+        this.userService.setActivationCode(email, resetCode);
+        this.mailService.sendMessage(email, resetCode, PATH_TO_RESET_PASSWORD);
+    }
+
+    @Override
+    public String resetPassword(final String code, final ResetPasswordDto dto) {
+        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        var user = this.userService.resetPassword(email, code, dto.oldPassword(), dto.newPassword());
+        return generateToken(new User(
+                user.getEmail(),
+                user.getPassword(),
+                user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
+                        .toList()
+        ));
     }
 
     private static String generateToken(final UserDetails userDetails) {

@@ -52,4 +52,8 @@ public interface UserService {
      * @throws Exception if an error occurs during image upload
      */
     User uploadImage(final String id, final MultipartFile file) throws Exception;
+
+    User resetPassword(final String email, final String code, final String oldPassword, final String newPassword);
+
+    void setActivationCode(final String email, final String resetCode);
 }
