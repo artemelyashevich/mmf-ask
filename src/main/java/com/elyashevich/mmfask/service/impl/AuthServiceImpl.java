@@ -12,7 +12,6 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,16 +74,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void sendResetPasswordCode() throws MessagingException {
-        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    public void sendResetPasswordCode(final String email) throws MessagingException {
         var resetCode = generateActivationToken();
         this.userService.setActivationCode(email, resetCode);
         this.mailService.sendMessage(email, resetCode, PATH_TO_RESET_PASSWORD);
     }
 
     @Override
-    public String resetPassword(final String code, final ResetPasswordDto dto) {
-        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    public String resetPassword(final String email, final String code, final ResetPasswordDto dto) {
         var user = this.userService.resetPassword(email, code, dto.oldPassword(), dto.newPassword());
         return generateToken(new User(
                 user.getEmail(),

@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_GUEST)
                                 .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_GUEST)
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
+                                .requestMatchers("api/v1/favorites/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/auth/reset-password/*").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(ROLE_MODERATOR)

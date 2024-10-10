@@ -43,19 +43,17 @@ public class MailServiceImpl implements MailService {
         Context context = new Context();
         context.setVariables(Map.of(
                 "username", receiver,
-                templateName, activationCode
+                "activation_code", activationCode
         ));
 
         helper.setFrom(senderEmail);
         helper.setTo(receiver);
         helper.setSubject(receiver);
 
-        String template = this.templateEngine.process("activate_account", context);
+        String template = this.templateEngine.process(templateName, context);
 
         helper.setText(template, true);
 
         this.javaMailSender.send(mimeMessage);
     }
-
-
 }

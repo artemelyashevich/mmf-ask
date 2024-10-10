@@ -1,6 +1,7 @@
 package com.elyashevich.mmfask.service.impl;
 
 import com.elyashevich.mmfask.entity.Favorites;
+import com.elyashevich.mmfask.exception.ResourceAlreadyExistsException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.FavoritesRepository;
 import com.elyashevich.mmfask.service.FavoritesService;
@@ -27,18 +28,18 @@ public class FavoritesServiceImpl implements FavoritesService {
     }
 
     @Override
-    public Favorites findByUserId(final String userId) {
-        return this.favoritesRepository.findByUserId(userId)
+    public Favorites findByUserEmail(final String email) {
+        return this.favoritesRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "The user with this ID = %s has no favorites.".formatted(userId))
+                        "The user with this ID = %s has no favorites.".formatted(email))
                 );
     }
 
     @Transactional
     @Override
-    public Favorites create(final String userId, final String postId) {
+    public Favorites create(final String email, final String postId) {
         var favorite = Favorites.builder()
-                .user(this.userService.findById(userId))
+                .user(this.userService.findByEmail(email))
                 .posts(
                         List.of(
                                 this.postService.findById(postId)
@@ -50,18 +51,24 @@ public class FavoritesServiceImpl implements FavoritesService {
 
     @Transactional
     @Override
-    public Favorites addPost(final String userId, final String postId) {
-        var favorites = this.findByUserId(userId);
+    public Favorites addPost(final String email, final String postId) {
+        var favorites = this.findByUserEmail(email);
         var posts = favorites.getPosts();
-        posts.add(this.postService.findById(postId));
+        var post = this.postService.findById(postId);
+        if (posts.contains(post)) {
+            throw new ResourceAlreadyExistsException(
+                    "Post with such id = %s already exists in favorites.".formatted(post)
+            );
+        }
+        posts.add(post);
         favorites.setPosts(posts);
         return this.favoritesRepository.save(favorites);
     }
 
     @Transactional
     @Override
-    public Favorites removePost(final String userId, final String postId) {
-        var favorites = this.findByUserId(userId);
+    public Favorites removePost(final String email, final String postId) {
+        var favorites = this.findByUserEmail(email);
         var posts = favorites.getPosts();
         var post = this.postService.findById(postId);
         favorites.setPosts(
@@ -75,7 +82,7 @@ public class FavoritesServiceImpl implements FavoritesService {
     @Transactional
     @Override
     public void delete(final String userId) {
-        var favorites = this.findByUserId(userId);
+        var favorites = this.findByUserEmail(userId);
         this.favoritesRepository.delete(favorites);
     }
 }

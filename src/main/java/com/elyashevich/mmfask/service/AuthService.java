@@ -3,7 +3,6 @@ package com.elyashevich.mmfask.service;
 import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import jakarta.mail.MessagingException;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Service interface for authentication operations.
@@ -27,7 +26,7 @@ public interface AuthService {
 
     String activateUser(final String email, final String code);
 
-    void sendResetPasswordCode() throws MessagingException;
+    void sendResetPasswordCode(final String email) throws MessagingException;
 
-    String resetPassword(final String code, final ResetPasswordDto dto);
+    String resetPassword(final String email, final String code, final ResetPasswordDto dto);
 }

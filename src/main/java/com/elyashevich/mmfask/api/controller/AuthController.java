@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -37,23 +39,27 @@ public class AuthController {
     }
 
     @PostMapping("/activate/{email}")
-    public AuthResponseDto activate(final @PathVariable("email") String email, final @RequestParam("code") String code) {
+    public AuthResponseDto activate(
+            final @PathVariable("email") String email,
+            final @RequestParam("code") String code
+    ) {
         var token = this.authService.activateUser(email, code);
         return new AuthResponseDto(token);
     }
 
     @PostMapping("/reset-password")
     @ResponseStatus(HttpStatus.CREATED)
-    public void resetPasswordCode() throws MessagingException {
-        this.authService.sendResetPasswordCode();
+    public void resetPasswordCode(final Principal principal) throws MessagingException {
+        this.authService.sendResetPasswordCode(principal.getName());
     }
 
     @PostMapping("/reset-password/{code}")
     public AuthResponseDto resetPassword(
             final @PathVariable("code") String code,
-            final @Validated @RequestBody ResetPasswordDto dto
-    ) {
-        var token = this.authService.resetPassword(code, dto);
+            final @Validated @RequestBody ResetPasswordDto dto,
+            final Principal principal
+            ) {
+        var token = this.authService.resetPassword(principal.getName(), code, dto);
         return new AuthResponseDto(token);
     }
 }

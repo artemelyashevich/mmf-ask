@@ -8,13 +8,13 @@ public interface FavoritesService {
 
     List<Favorites> findAll();
 
-    Favorites findByUserId(final String userId);
+    Favorites findByUserEmail(final String email);
 
-    Favorites create(final String userId, final String postId);
+    Favorites create(final String email, final String postId);
 
-    Favorites addPost(final String userId, final String postId);
+    Favorites addPost(final String email, final String postId);
 
-    Favorites removePost(final String userId, final String postId);
+    Favorites removePost(final String email, final String postId);
 
-    void delete(final String userId);
+    void delete(final String email);
 }
