@@ -5,10 +5,10 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.thymeleaf.context.Context;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.nio.charset.StandardCharsets;
@@ -28,7 +28,11 @@ public class MailServiceImpl implements MailService {
     private String senderText;
 
     @Override
-    public void sendMessage(final String receiver, String activationCode) throws MessagingException {
+    public void sendMessage(
+            final String receiver,
+            final String activationCode,
+            final String templateName
+    ) throws MessagingException {
         MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(
                 mimeMessage,
@@ -46,12 +50,10 @@ public class MailServiceImpl implements MailService {
         helper.setTo(receiver);
         helper.setSubject(receiver);
 
-        String template = this.templateEngine.process("activate_account", context);
+        String template = this.templateEngine.process(templateName, context);
 
         helper.setText(template, true);
 
         this.javaMailSender.send(mimeMessage);
     }
-
-
 }
