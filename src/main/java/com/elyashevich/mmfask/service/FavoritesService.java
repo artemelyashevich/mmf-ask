@@ -12,8 +12,6 @@ public interface FavoritesService {
 
     Favorites create(final String email, final String postId);
 
-    Favorites addPost(final String email, final String postId);
-
     Favorites removePost(final String email, final String postId);
 
     void delete(final String email);
