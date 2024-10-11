@@ -39,7 +39,7 @@ public class FavoritesController {
             final @PathVariable("postId") String postId,
             final Principal principal
     ) {
-        return this.favoritesService.addPost(principal.getName(), postId);
+        return this.favoritesService.create(principal.getName(), postId);
     }
 
     @PutMapping("/{postId}")

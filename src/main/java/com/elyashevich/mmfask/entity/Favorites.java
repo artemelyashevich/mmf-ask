@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "categories")
+@Document(collection = "favorites")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
