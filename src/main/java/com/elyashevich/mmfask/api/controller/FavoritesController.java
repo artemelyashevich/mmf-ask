@@ -1,5 +1,7 @@
 package com.elyashevich.mmfask.api.controller;
 
+import com.elyashevich.mmfask.api.dto.favorites.FavoritesDto;
+import com.elyashevich.mmfask.api.mapper.FavoritesMapper;
 import com.elyashevich.mmfask.entity.Favorites;
 import com.elyashevich.mmfask.service.FavoritesService;
 import lombok.RequiredArgsConstructor;
@@ -22,32 +24,37 @@ import java.util.List;
 public class FavoritesController {
 
     private final FavoritesService favoritesService;
+    private final FavoritesMapper favoritesMapper;
 
     @GetMapping
-    public List<Favorites> findAll() {
-        return this.favoritesService.findAll();
+    public List<FavoritesDto> findAll() {
+        var favorites = this.favoritesService.findAll();
+        return this.favoritesMapper.toDto(favorites);
     }
 
-    @GetMapping("{userEmail}")
-    public Favorites findByUserEmail(final @PathVariable("userEmail") String email){
-        return this.favoritesService.findByUserEmail(email);
+    @GetMapping("/user/{userEmail}")
+    public FavoritesDto findByUserEmail(final @PathVariable("userEmail") String email){
+        var favorites = this.favoritesService.findByUserEmail(email);
+        return this.favoritesMapper.toDto(favorites);
     }
 
     @PostMapping("/{postId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Favorites addPost(
+    public FavoritesDto addPost(
             final @PathVariable("postId") String postId,
             final Principal principal
     ) {
-        return this.favoritesService.create(principal.getName(), postId);
+        var favorites = this.favoritesService.create(principal.getName(), postId);
+        return this.favoritesMapper.toDto(favorites);
     }
 
     @PutMapping("/{postId}")
-    public Favorites removePost(
+    public FavoritesDto removePost(
             final @PathVariable("postId") String postId,
             final Principal principal
     ){
-        return this.favoritesService.removePost(principal.getName(), postId);
+        var favorites = this.favoritesService.removePost(principal.getName(), postId);
+        return this.favoritesMapper.toDto(favorites);
     }
 
     @DeleteMapping
