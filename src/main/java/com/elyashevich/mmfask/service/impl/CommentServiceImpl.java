@@ -8,12 +8,14 @@ import com.elyashevich.mmfask.service.CommentService;
 import com.elyashevich.mmfask.service.PostService;
 import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -37,6 +39,8 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public Comment create(final CommentRequestDto dto, final String email) {
+        log.debug("Attempting to create a new comment by user with email '{}'.", email);
+
         var user = this.userService.findByEmail(email);
         var post = this.postService.findById(dto.postId());
         var comment = Comment.builder()
@@ -44,22 +48,34 @@ public class CommentServiceImpl implements CommentService {
                 .post(post)
                 .body(dto.body())
                 .build();
-        return this.commentRepository.save(comment);
+        var savedComment = this.commentRepository.save(comment);
+
+        log.info("Comment by user with email '{}' has been created.", email);
+        return savedComment;
     }
 
     @Transactional
     @Override
     public Comment update(final String id, final CommentRequestDto dto) {
+        log.debug("Attempting to update a comment with id '{}'.", id);
+
         var comment = this.findById(id);
         comment.setBody(dto.body());
-        return this.commentRepository.save(comment);
+        var savedUser =  this.commentRepository.save(comment);
+
+        log.info("Comment with id '{}' has been updated.", id);
+        return savedUser;
     }
 
     @Transactional
     @Override
     public void delete(final String id) {
+        log.debug("Attempting to delete a comment with id '{}'.", id);
+
         var comment = this.findById(id);
         this.commentRepository.delete(comment);
+
+        log.info("Comment with id '{}' has been deleted.", id);
     }
 
     private List<Comment> customFindAll(final String userId, final String postId) {

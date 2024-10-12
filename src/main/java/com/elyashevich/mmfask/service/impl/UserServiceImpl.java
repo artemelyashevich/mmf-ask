@@ -55,11 +55,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User activate(final String email) {
+        log.debug("Attempting to activate user with email '{}'.", email);
+
         var user = this.findByEmail(email);
         var roles = user.getRoles();
         roles.add(Role.ROLE_USER);
         user.setRoles(roles);
-        return this.userRepository.save(user);
+        var savedUser = this.userRepository.save(user);
+
+        log.info("User with email '{}' has been activated.", email);
+        return savedUser;
     }
 
     @Transactional
@@ -102,6 +107,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             final String oldPassword,
             final String newPassword
     ) {
+        log.debug("Attempting to reset password of user with email '{}'.", email);
+
         var user = this.findByEmail(email);
         if (!user.getActivationCode().equals(code)) {
             throw new InvalidTokenException("Invalid reset code.");
@@ -110,15 +117,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new InvalidPasswordException("Password mismatch.");
         }
         user.setPassword(this.passwordEncoder.encode(newPassword));
-        return this.userRepository.save(user);
+        var savedUser = this.userRepository.save(user);
+
+        log.info("Password of user with email '{}' has been reseted.", email);
+        return savedUser;
     }
 
     @Transactional
     @Override
     public void setActivationCode(final String email, final String resetCode) {
+        log.debug("Attempting to activate user with email '{}'.", email);
+
         var user = this.findByEmail(email);
         user.setActivationCode(resetCode);
         this.userRepository.save(user);
+
+        log.info("User with email '{}' has been activated.", email);
     }
 
     @Override

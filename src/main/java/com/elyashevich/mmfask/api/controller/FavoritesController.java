@@ -2,7 +2,6 @@ package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.favorites.FavoritesDto;
 import com.elyashevich.mmfask.api.mapper.FavoritesMapper;
-import com.elyashevich.mmfask.entity.Favorites;
 import com.elyashevich.mmfask.service.FavoritesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

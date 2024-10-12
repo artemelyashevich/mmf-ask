@@ -4,6 +4,7 @@ import com.elyashevich.mmfask.service.MailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,6 +15,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
@@ -24,23 +26,22 @@ public class MailServiceImpl implements MailService {
     @Value("${spring.mail.sender.email}")
     private String senderEmail;
 
-    @Value("${spring.mail.sender.text}")
-    private String senderText;
-
     @Override
     public void sendMessage(
             final String receiver,
             final String activationCode,
             final String templateName
     ) throws MessagingException {
-        MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(
+        log.debug("Attempting to send email.");
+
+        var mimeMessage = this.javaMailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(
                 mimeMessage,
                 MimeMessageHelper.MULTIPART_MODE_MIXED,
                 StandardCharsets.UTF_8.name()
         );
 
-        Context context = new Context();
+        var context = new Context();
         context.setVariables(Map.of(
                 "username", receiver,
                 "activation_code", activationCode
@@ -50,10 +51,12 @@ public class MailServiceImpl implements MailService {
         helper.setTo(receiver);
         helper.setSubject(receiver);
 
-        String template = this.templateEngine.process(templateName, context);
+        var template = this.templateEngine.process(templateName, context);
 
         helper.setText(template, true);
 
         this.javaMailSender.send(mimeMessage);
+
+        log.info("Email has been sent.");
     }
 }

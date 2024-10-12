@@ -64,32 +64,46 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String activateUser(final String email, final String code) {
+        log.debug("Attempting to activate user with email '{}'.", email);
+
         var user = this.userService.findByEmail(email);
         if (!user.getActivationCode().equals(code)) {
             throw new InvalidTokenException("Invalid activation code.");
         }
         this.userService.activate(email);
         var userDetails = this.userService.loadUserByUsername(email);
-        return generateToken(userDetails);
+        var token = generateToken(userDetails);
+
+        log.info("User with email '{}' has been activated.", email);
+        return token;
     }
 
     @Override
     public void sendResetPasswordCode(final String email) throws MessagingException {
+        log.debug("Attempting to send reset password code to user with email '{}'", email);
+
         var resetCode = generateActivationToken();
         this.userService.setActivationCode(email, resetCode);
         this.mailService.sendMessage(email, resetCode, PATH_TO_RESET_PASSWORD);
+
+        log.info("Reset password code gas been sent to user with email '{}'.", email);
     }
 
     @Override
     public String resetPassword(final String email, final String code, final ResetPasswordDto dto) {
+        log.debug("Attempting to reset password of user with email '{}'", email);
+
         var user = this.userService.resetPassword(email, code, dto.oldPassword(), dto.newPassword());
-        return generateToken(new User(
+        var token = generateToken(new User(
                 user.getEmail(),
                 user.getPassword(),
                 user.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority(role.name()))
                         .toList()
         ));
+
+        log.info("Password of user with email '{}' has been reseted.", email);
+        return token;
     }
 
     private static String generateToken(final UserDetails userDetails) {

@@ -41,6 +41,12 @@ public interface UserService {
      */
     User findByEmail(final String email);
 
+    /**
+     * Activates a user with the provided email.
+     *
+     * @param email The email of the user to activate.
+     * @return User object after activation.
+     */
     User activate(final String email);
 
     /**
@@ -53,7 +59,22 @@ public interface UserService {
      */
     User uploadImage(final String id, final MultipartFile file) throws Exception;
 
+    /**
+     * Resets the password for a user.
+     *
+     * @param email The email of the user.
+     * @param code The code for verification.
+     * @param oldPassword The old password of the user.
+     * @param newPassword The new password to be set.
+     * @return User object with the updated password.
+     */
     User resetPassword(final String email, final String code, final String oldPassword, final String newPassword);
 
+    /**
+     * Sets the activation code for a user.
+     *
+     * @param email The email of the user.
+     * @param resetCode The reset code to be set.
+     */
     void setActivationCode(final String email, final String resetCode);
 }
