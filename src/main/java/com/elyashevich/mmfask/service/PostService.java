@@ -1,6 +1,8 @@
 package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,7 +17,7 @@ public interface PostService {
      *
      * @return a list of all posts
      */
-    List<Post> findAll();
+    Page<Post> findAll(final String query, final Pageable page);
 
     /**
      * Finds a post by name.

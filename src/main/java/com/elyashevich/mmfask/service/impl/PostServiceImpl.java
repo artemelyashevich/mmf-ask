@@ -2,20 +2,21 @@ package com.elyashevich.mmfask.service.impl;
 
 import com.elyashevich.mmfask.entity.AttachmentImage;
 import com.elyashevich.mmfask.entity.Post;
-import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.PostRepository;
 import com.elyashevich.mmfask.service.*;
 import com.elyashevich.mmfask.service.converter.impl.PostConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,8 +33,8 @@ public class PostServiceImpl implements PostService {
     private final AttachmentService attachmentService;
 
     @Override
-    public List<Post> findAll() {
-        return this.postRepository.findAll();
+    public Page<Post> findAll(final String query, final Pageable page) {
+        return this.postRepository.findBy(query, page);
     }
 
     @Override
