@@ -2,12 +2,10 @@ package com.elyashevich.mmfask.service.impl;
 
 import com.elyashevich.mmfask.entity.AttachmentImage;
 import com.elyashevich.mmfask.entity.Post;
+import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.PostRepository;
-import com.elyashevich.mmfask.service.AttachmentService;
-import com.elyashevich.mmfask.service.CategoryService;
-import com.elyashevich.mmfask.service.PostService;
-import com.elyashevich.mmfask.service.ProgrammingLanguageService;
+import com.elyashevich.mmfask.service.*;
 import com.elyashevich.mmfask.service.converter.impl.PostConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +64,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post update(final String id, final Post dto) {
+    public Post update(final String id, final Post dto, final String email) {
         log.debug("Attempting to update a post with ID '{}'.", dto.getId());
 
         var candidate = this.findById(id);
@@ -79,7 +77,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post uploadFile(final String id, final MultipartFile[] files) throws Exception {
+    public Post uploadFile(final String id, final MultipartFile[] files, final String email) throws Exception {
         log.debug("Attempting to upload image to post with ID '{}'.", id);
 
         var post = this.findById(id);
@@ -103,7 +101,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void delete(final String id) {
+    public void delete(final String id, final String email) {
         log.debug("Attempting to delete a post with id '{}'.", id);
 
         var candidate = this.findById(id);

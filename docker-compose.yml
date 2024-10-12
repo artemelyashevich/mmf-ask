@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+
+  spring-boot-app:
+    image: openjdk:17-jdk-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-boot-app
+    restart: always
+    ports:
+      - "8222:8222"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: mmfask
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: mmfask2024@gmail.com
+      SPRING_MAIL_PASSWORD: syvg ndjv wvdb tjlp
+      SPRING_MAIL_SENDER_EMAIL: mmfask2024@gmail.com
+
+
+

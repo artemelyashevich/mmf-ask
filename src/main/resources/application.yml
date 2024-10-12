@@ -21,12 +21,10 @@ spring:
             enable: true
     sender:
       email: mmfask2024@gmail.com
-      text: no-reply
 server:
   port: 8222
 
 application:
-  security:
-    jwt:
-      secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
-      lifetime: 86_400_000L
+  admin:
+    password: adminPassword
+    email: example@example.com

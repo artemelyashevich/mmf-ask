@@ -34,6 +34,22 @@ public interface UserService {
     User create(final User user);
 
     /**
+     * Creates a new admin.
+     *
+     * @param user the user to create
+     * @return the created user
+     */
+    User createAdmin(final User user);
+
+    /**
+     * Creates a new moderator.
+     *
+     * @param user the user to create
+     * @return the created user
+     */
+    User createModerator(final User user);
+
+    /**
      * Finds a user by email.
      *
      * @param email the email of the user to find
@@ -52,7 +68,7 @@ public interface UserService {
     /**
      * Uploads an image for a specific user.
      *
-     * @param id the ID of the user to upload the image for
+     * @param id   the ID of the user to upload the image for
      * @param file the multipart file representing the image to upload
      * @return the user with the uploaded image
      * @throws Exception if an error occurs during image upload
@@ -62,8 +78,8 @@ public interface UserService {
     /**
      * Resets the password for a user.
      *
-     * @param email The email of the user.
-     * @param code The code for verification.
+     * @param email       The email of the user.
+     * @param code        The code for verification.
      * @param oldPassword The old password of the user.
      * @param newPassword The new password to be set.
      * @return User object with the updated password.
@@ -73,7 +89,7 @@ public interface UserService {
     /**
      * Sets the activation code for a user.
      *
-     * @param email The email of the user.
+     * @param email     The email of the user.
      * @param resetCode The reset code to be set.
      */
     void setActivationCode(final String email, final String resetCode);

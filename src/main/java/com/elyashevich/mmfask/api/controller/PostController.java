@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -54,24 +55,27 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     public PostResponseDto uploadImage(
             final @PathVariable("id") String id,
-            final @RequestParam("files") MultipartFile[] files
+            final @RequestParam("files") MultipartFile[] files,
+            final Principal principal
     ) throws Exception {
-        var post = this.postService.uploadFile(id, files);
+        var post = this.postService.uploadFile(id, files, principal.getName());
         return this.postMapper.toDto(post);
     }
 
     @PutMapping("/{id}")
     public PostResponseDto update(
             final @PathVariable("id") String id,
-            final @Validated @RequestBody PostRequestDto dto
+            final @Validated @RequestBody PostRequestDto dto,
+            final Principal principal
     ) {
-        var post = this.postService.update(id, postMapper.toEntity(dto));
+        var post = this.postService.update(id, postMapper.toEntity(dto), principal.getName());
         return this.postMapper.toDto(post);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(final @PathVariable("id") String id) {
-        this.postService.delete(id);
+    public void delete(final @PathVariable("id") String id, final Principal principal
+    ) {
+        this.postService.delete(id, principal.getName());
     }
 }

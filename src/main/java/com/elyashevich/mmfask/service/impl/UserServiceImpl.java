@@ -86,6 +86,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return newUser;
     }
 
+    @Override
+    public User createAdmin(final User user) {
+        log.debug("Attempting to create a new admin user with email '{}'.", user.getEmail());
+
+        var newUser = User.builder()
+                .email(user.getEmail())
+                .password(this.passwordEncoder.encode(user.getPassword()))
+                .roles(Set.of(Role.ROLE_GUEST, Role.ROLE_USER, Role.ROLE_MODERATOR, Role.ROLE_ADMIN))
+                .image(null)
+                .build();
+
+        var savedUser = this.userRepository.save(newUser);
+
+        log.info("Admin with email '{}' has been created.", user.getEmail());
+        return savedUser;
+    }
+
+    @Override
+    public User createModerator(final User user) {
+        log.debug("Attempting to create a new moderator user with email '{}'.", user.getEmail());
+
+        var roles = user.getRoles();
+        roles.add(Role.ROLE_MODERATOR);
+        user.setRoles(roles);
+        var savedUser = this.userRepository.save(user);
+        
+        log.info("Moderator with email '{}' has been created.", user.getEmail());
+        return savedUser;
+    }
+
     @Transactional
     @Override
     public User uploadImage(final String id, final MultipartFile file) throws Exception {
