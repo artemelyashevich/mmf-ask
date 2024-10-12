@@ -25,6 +25,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PostConverter converter;
+
+    private final UserService userService;
     private final CategoryService categoryService;
     private final ProgrammingLanguageService programmingLanguageService;
     private final AttachmentService attachmentService;
@@ -64,7 +66,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post update(final String id, final Post dto, final String email) {
+    public Post update(final String id, final Post dto) {
         log.debug("Attempting to update a post with ID '{}'.", dto.getId());
 
         var candidate = this.findById(id);
@@ -77,7 +79,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post uploadFile(final String id, final MultipartFile[] files, final String email) throws Exception {
+    public Post uploadFile(final String id, final MultipartFile[] files) throws Exception {
         log.debug("Attempting to upload image to post with ID '{}'.", id);
 
         var post = this.findById(id);
@@ -101,7 +103,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void delete(final String id, final String email) {
+    public void delete(final String id) {
         log.debug("Attempting to delete a post with id '{}'.", id);
 
         var candidate = this.findById(id);
@@ -116,8 +118,10 @@ public class PostServiceImpl implements PostService {
                 .map(category -> this.categoryService.findByName(category.getName()))
                 .collect(Collectors.toSet());
         var programmingLanguage = this.programmingLanguageService.findByName(dto.getProgrammingLanguage().getName());
+        var user = this.userService.findByEmail(dto.getCreator().getEmail());
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
+        dto.setCreator(user);
         return dto;
     }
 }

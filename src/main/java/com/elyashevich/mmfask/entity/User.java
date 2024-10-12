@@ -39,9 +39,6 @@ public class User {
     private Set<Role> roles;
 
     @DBRef
-    private List<Post> posts;
-
-    @DBRef
     private AttachmentImage image;
 
     private String activationCode;

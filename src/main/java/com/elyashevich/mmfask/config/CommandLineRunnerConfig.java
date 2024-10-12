@@ -30,12 +30,10 @@ public class CommandLineRunnerConfig {
     public CommandLineRunner commandLineRunnerBean() {
         return (args) -> {
             if (!this.userRepository.existsByEmail(adminEmail)){
-                var admin = this.userService.create(User.builder()
+                var admin = User.builder()
                         .email(this.adminEmail)
                         .password(this.adminPassword)
-                        .roles(Set.of(Role.ROLE_ADMIN))
-                        .build()
-                );
+                        .build();
                 this.userService.createAdmin(admin);
             }
         };

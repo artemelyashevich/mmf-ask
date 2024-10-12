@@ -5,7 +5,9 @@ import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
 import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
 import com.elyashevich.mmfask.api.mapper.ProgrammingLanguageMapper;
+import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.entity.Post;
+import com.elyashevich.mmfask.entity.User;
 import com.elyashevich.mmfask.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostMapperImpl implements PostMapper {
 
+    private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
     private final ProgrammingLanguageMapper programmingLanguageMapper;
 
@@ -26,6 +29,7 @@ public class PostMapperImpl implements PostMapper {
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
+                this.userMapper.toDto(entity.getCreator()),
                 this.programmingLanguageMapper.toDto(entity.getProgrammingLanguage()),
                 this.categoryMapper.toDto(entity.getCategories()),
                 entity.getViews(),
@@ -56,6 +60,9 @@ public class PostMapperImpl implements PostMapper {
                 .title(dto.title())
                 .description(dto.description())
                 .categories(this.categoryMapper.toEntityFromStrings(dto.namesOfCategories()))
+                .creator(User.builder()
+                        .email(dto.creatorEmail())
+                        .build())
                 .programmingLanguage(this.programmingLanguageMapper.toEntityFromString(dto.programmingLanguageName()))
                 .views(dto.views())
                 .build();

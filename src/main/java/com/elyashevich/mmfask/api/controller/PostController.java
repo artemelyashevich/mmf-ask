@@ -6,6 +6,7 @@ import com.elyashevich.mmfask.api.mapper.PostMapper;
 import com.elyashevich.mmfask.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,6 +45,7 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#dto.creatorEmail() == authentication.principal")
     public PostResponseDto create(final @Validated @RequestBody PostRequestDto dto) {
         var post = this.postService.create(this.postMapper.toEntity(dto));
         post.setAttachmentImages(new HashSet<>());
@@ -53,29 +54,31 @@ public class PostController {
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
     public PostResponseDto uploadImage(
             final @PathVariable("id") String id,
             final @RequestParam("files") MultipartFile[] files,
-            final Principal principal
+            final @RequestParam("email") String email
     ) throws Exception {
-        var post = this.postService.uploadFile(id, files, principal.getName());
+        var post = this.postService.uploadFile(id, files);
         return this.postMapper.toDto(post);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("#email == authentication.principal")
     public PostResponseDto update(
             final @PathVariable("id") String id,
             final @Validated @RequestBody PostRequestDto dto,
-            final Principal principal
+            final @RequestParam("email") String email
     ) {
-        var post = this.postService.update(id, postMapper.toEntity(dto), principal.getName());
+        var post = this.postService.update(id, postMapper.toEntity(dto));
         return this.postMapper.toDto(post);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(final @PathVariable("id") String id, final Principal principal
-    ) {
-        this.postService.delete(id, principal.getName());
+    @PreAuthorize("#email == authentication.principal")
+    public void delete(final @PathVariable("id") String id, @RequestParam("email") String email) {
+        this.postService.delete(id);
     }
 }

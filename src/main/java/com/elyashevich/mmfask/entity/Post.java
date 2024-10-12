@@ -34,6 +34,9 @@ public class Post {
     private String description;
 
     @DBRef
+    private User creator;
+
+    @DBRef
     private ProgrammingLanguage programmingLanguage;
 
     @DBRef

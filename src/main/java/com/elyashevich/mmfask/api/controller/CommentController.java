@@ -5,17 +5,10 @@ import com.elyashevich.mmfask.api.dto.comment.CommentResponseDto;
 import com.elyashevich.mmfask.api.mapper.CommentMapper;
 import com.elyashevich.mmfask.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -42,23 +35,29 @@ public class CommentController {
     }
 
     @PostMapping
-    public CommentResponseDto create(final @Validated CommentRequestDto dto, final Principal principal) {
-        var email = principal.getName();
+    @PreAuthorize("#email == authentication.principal")
+    public CommentResponseDto create(final @Validated CommentRequestDto dto, final @RequestParam("email") String email) {
         var comment = this.commentService.create(dto, email);
         return commentMapper.toResponseDto(comment);
     }
 
     @PutMapping("/{commentId}")
+    @PreAuthorize("#email == authentication.principal")
     public CommentResponseDto update(
             final @PathVariable("commentId") String id,
-            final @Validated CommentRequestDto dto
+            final @Validated CommentRequestDto dto,
+            final @RequestParam("email") String email
     ) {
         var comment = this.commentService.update(id, dto);
         return this.commentMapper.toResponseDto(comment);
     }
 
     @DeleteMapping("/{commentId}")
-    public void delete(final @PathVariable("commentId") String id) {
+    @PreAuthorize("#email == authentication.principal")
+    public void delete(
+            final @PathVariable("commentId") String id,
+            final @RequestParam("email") String email
+    ) {
         this.commentService.delete(id);
     }
 }

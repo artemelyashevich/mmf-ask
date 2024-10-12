@@ -111,22 +111,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         roles.add(Role.ROLE_MODERATOR);
         user.setRoles(roles);
         var savedUser = this.userRepository.save(user);
-        
+
         log.info("Moderator with email '{}' has been created.", user.getEmail());
         return savedUser;
     }
 
     @Transactional
     @Override
-    public User uploadImage(final String id, final MultipartFile file) throws Exception {
-        log.debug("Attempting to upload image to user with ID '{}'.", id);
+    public User uploadImage(final String email, final MultipartFile file) throws Exception {
+        log.debug("Attempting to upload image to user with ID '{}'.", email);
 
-        var user = this.findById(id);
+        var user = this.findByEmail(email);
         var image = this.attachmentService.create(file);
         user.setImage(image);
         var updatedUser = this.userRepository.save(user);
 
-        log.info("User with ID '{}' has been updated.", id);
+        log.info("User with ID '{}' has been updated.", email);
         return updatedUser;
     }
 

@@ -48,14 +48,14 @@ public interface PostService {
      * @param dto the updated post DTO
      * @return the updated post
      */
-    Post update(final String id, final Post dto, final String email);
+    Post update(final String id, final Post dto);
 
     /**
      * Deletes a post by ID.
      *
      * @param id the ID of the post to delete
      */
-    void delete(final String id, final String email);
+    void delete(final String id);
 
     /**
      * Uploads a file for a specific post.
@@ -65,5 +65,5 @@ public interface PostService {
      * @return the updated post with the uploaded file
      * @throws Exception if an error occurs during file upload
      */
-    Post uploadFile(final String id, final MultipartFile[] files, final String email) throws Exception;
+    Post uploadFile(final String id, final MultipartFile[] files) throws Exception;
 }

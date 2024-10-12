@@ -1,5 +1,6 @@
 package com.elyashevich.mmfask.api.dto.post;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -21,6 +22,10 @@ public record PostRequestDto(
                 message = "Description must be more then {min}."
         )
         String description,
+
+        @NotNull(message = "Creator email must be not empty.")
+        @Email(message = "Invalid email format.")
+        String creatorEmail,
 
         @NotNull(message = "Programming language must be not empty.")
         @Length(

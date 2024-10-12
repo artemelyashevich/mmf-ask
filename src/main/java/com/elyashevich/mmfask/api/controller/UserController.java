@@ -5,6 +5,7 @@ import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,13 +37,14 @@ public class UserController {
         return this.userMapper.toDto(user);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
     public UserDto uploadImage(
-            final @PathVariable("id") String id,
+            final @PathVariable("email") String email,
             final @RequestParam("file") MultipartFile file
     ) throws Exception {
-        var user = this.userService.uploadImage(id, file);
+        var user = this.userService.uploadImage(email, file);
         return this.userMapper.toDto(user);
     }
 }

@@ -10,6 +10,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,6 +33,7 @@ public class ControllerAdvice {
     private static final String DUPLICATE_KEY_EXCEPTION = "Item with such data already exists.";
     private static final String NOT_SUPPORTED_MESSAGE = "Http method with this URL not found.";
     private static final String TOKEN_EXPIRED_MESSAGE = "JWT expired.";
+    private static final String ACCESS_DENIED_MESSAGE = "Access denied.";
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -97,11 +99,19 @@ public class ControllerAdvice {
         return new ExceptionBody(message);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionBody handleTokenExpire(final ExpiredJwtException exception) {
         var message = exception.getMessage() == null ? TOKEN_EXPIRED_MESSAGE : exception.getMessage();
         log.warn("{} '{}'.", TOKEN_EXPIRED_MESSAGE, message);
+        return new ExceptionBody(message);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionBody handleDeniedException(final AuthorizationDeniedException exception) {
+        var message = exception.getMessage() == null ? ACCESS_DENIED_MESSAGE : exception.getMessage();
+        log.warn("{} '{}'.", ACCESS_DENIED_MESSAGE, message);
         return new ExceptionBody(message);
     }
 
