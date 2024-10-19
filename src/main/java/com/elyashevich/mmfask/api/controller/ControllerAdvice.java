@@ -118,6 +118,7 @@ public class ControllerAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleException(final RuntimeException exception) {
+        exception.printStackTrace();
         log.error(exception.getMessage(), exception.getCause());
         return new ExceptionBody(UNEXPECTED_ERROR_MESSAGE);
     }
