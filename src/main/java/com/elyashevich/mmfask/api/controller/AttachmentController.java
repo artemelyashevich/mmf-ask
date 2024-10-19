@@ -1,23 +1,40 @@
 package com.elyashevich.mmfask.api.controller;
 
-import com.elyashevich.mmfask.service.AttachmentService;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+/**
+ * Controller for managing image attachments.
+ */
 @RequestMapping("/api/v1/images/")
-@RequiredArgsConstructor
-public class AttachmentController {
+@Tag(name = "Attachment Controller", description = "APIs for managing image attachments")
+public interface AttachmentController {
 
-    private final AttachmentService attachmentService;
-
-    @GetMapping(value = "{id}", produces = {MediaType.IMAGE_JPEG_VALUE})
-    public byte[] download(final @PathVariable("id") String id) {
-        var attachment = this.attachmentService.findById(id);
-        return attachment.getBytes();
-    }
+    /**
+     * Download an image file by ID.
+     *
+     * @param id The ID of the image to download.
+     * @return Byte array representing the image file.
+     */
+    @Operation(
+            summary = "Download image by ID",
+            description = "Download image file by ID"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Image found",
+            content = @Content(
+                    mediaType = MediaType.IMAGE_JPEG_VALUE,
+                    schema = @Schema(type = "string", format = "binary")
+            )
+    )
+    @GetMapping(value = "{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    byte[] download(final @PathVariable("id") String id);
 }

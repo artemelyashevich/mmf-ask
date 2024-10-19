@@ -43,6 +43,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/programming-languages/**").permitAll()
+                                .requestMatchers(
+                                        "/swagger-ui/*",
+                                        "/swagger/*",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/swagger-config"
+                                ).permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/users/**").hasRole(ROLE_GUEST)
                                 .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_GUEST)
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
