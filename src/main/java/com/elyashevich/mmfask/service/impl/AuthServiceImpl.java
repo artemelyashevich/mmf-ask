@@ -6,6 +6,7 @@ import com.elyashevich.mmfask.exception.InvalidPasswordException;
 import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.service.AuthService;
 import com.elyashevich.mmfask.service.MailService;
+import com.elyashevich.mmfask.service.NotificationService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
 import com.elyashevich.mmfask.util.TokenUtil;
 import jakarta.mail.MessagingException;
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final MailService mailService;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
     private final static String PATH_TO_RESET_PASSWORD = "reset_password";
     private final static String PATH_TO_ACTIVATE_ACCOUNT = "activate_account";
@@ -73,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
         this.userService.activate(email);
         var userDetails = this.userService.loadUserByUsername(email);
         var token = generateToken(userDetails);
+        this.notificationService.sendMessage("Account has been activated.", email);
 
         log.info("User with email '{}' has been activated.", email);
         return token;
