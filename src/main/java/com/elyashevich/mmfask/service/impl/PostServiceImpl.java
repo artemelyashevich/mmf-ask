@@ -4,13 +4,17 @@ import com.elyashevich.mmfask.entity.AttachmentImage;
 import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.PostRepository;
-import com.elyashevich.mmfask.service.*;
+import com.elyashevich.mmfask.service.AttachmentService;
+import com.elyashevich.mmfask.service.CategoryService;
+import com.elyashevich.mmfask.service.PostService;
+import com.elyashevich.mmfask.service.ProgrammingLanguageService;
+import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.impl.PostConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +38,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<Post> findAll(final String query, final Pageable page) {
-        return this.postRepository.findBy(query, page);
+        if (!query.isEmpty()) {
+            var posts = this.postRepository.findBy(query);
+            return new PageImpl<>(posts);
+        }
+        return this.postRepository.findAll(page);
     }
 
     @Override

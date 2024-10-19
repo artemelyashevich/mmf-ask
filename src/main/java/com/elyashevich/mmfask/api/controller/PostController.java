@@ -38,11 +38,7 @@ public class PostController {
             final @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
             final @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
     ) {
-        return this.postService.findAll(
-                        query, Pageable
-                                .ofSize(size)
-                                .withPage(page)
-                ).map(this.postMapper::toDto);
+        return this.postService.findAll(query, Pageable.ofSize(size).withPage(page)).map(this.postMapper::toDto);
     }
 
     @GetMapping("/{id}")
