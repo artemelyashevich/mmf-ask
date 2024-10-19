@@ -1,9 +1,11 @@
 package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.category.CategoryDto;
-import com.elyashevich.mmfask.api.mapper.CategoryMapper;
-import com.elyashevich.mmfask.service.CategoryService;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,49 +16,105 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+/**
+ * Controller for managing categories.
+ */
 @RequestMapping("/api/v1/categories")
-@RequiredArgsConstructor
-public class CategoryController {
+@Tag(name = "Category Controller", description = "APIs for managing categories")
+public interface CategoryController {
 
-    private final CategoryService categoryService;
-    private final CategoryMapper categoryMapper;
-
+    /**
+     * Find all categories.
+     *
+     * @return List of CategoryDto objects representing categories.
+     */
+    @Operation(
+            summary = "Find all categories",
+            description = "Get a list of all categories"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Categories found",
+            content = @Content(schema = @Schema(implementation = CategoryDto.class))
+    )
     @GetMapping
-    public List<CategoryDto> findAll() {
-        var categories = this.categoryService.findAll();
-        return this.categoryMapper.toDto(categories);
-    }
+    List<CategoryDto> findAll();
 
+    /**
+     * Find a category by its ID.
+     *
+     * @param id The ID of the category to retrieve.
+     * @return CategoryDto object representing the category.
+     */
+    @Operation(
+            summary = "Find category by ID",
+            description = "Get details of a category by ID"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Category found",
+            content = @Content(schema = @Schema(implementation = CategoryDto.class))
+    )
     @GetMapping("/{id}")
-    public CategoryDto findById(final @PathVariable("id") String id) {
-        var category = this.categoryService.findById(id);
-        return this.categoryMapper.toDto(category);
-    }
+    CategoryDto findById(final @PathVariable("id") String id);
 
+    /**
+     * Create a new category.
+     *
+     * @param categoryDto The CategoryDto containing the new category data.
+     * @return CategoryDto object representing the created category.
+     */
+    @Operation(
+            summary = "Create a new category",
+            description = "Create a new category"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Category created",
+            content = @Content(schema = @Schema(implementation = CategoryDto.class))
+    )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto create(final @Validated @RequestBody CategoryDto categoryDto) {
-        var category = this.categoryService.create(this.categoryMapper.toEntity(categoryDto));
-        return this.categoryMapper.toDto(category);
-    }
+    CategoryDto create(final @Validated @RequestBody CategoryDto categoryDto);
 
+    /**
+     * Update an existing category by its ID.
+     *
+     * @param id The ID of the category to update.
+     * @param categoryDto The updated CategoryDto data.
+     * @return CategoryDto object representing the updated category.
+     */
+    @Operation(
+            summary = "Update a category",
+            description = "Update an existing category by ID"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Category updated",
+            content = @Content(schema = @Schema(implementation = CategoryDto.class))
+    )
     @PutMapping("/{id}")
-    public CategoryDto update(
+    CategoryDto update(
             final @PathVariable("id") String id,
             final @Validated @RequestBody CategoryDto categoryDto
-    ) {
-        var category = this.categoryService.update(id, this.categoryMapper.toEntity(categoryDto));
-        return this.categoryMapper.toDto(category);
-    }
+    );
 
+    /**
+     * Delete a category by its ID.
+     *
+     * @param id The ID of the category to delete.
+     */
+    @Operation(
+            summary = "Delete a category",
+            description = "Delete a category by ID")
+    @ApiResponse(
+            responseCode = "204",
+            description = "Category deleted"
+    )
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(final @PathVariable("id") String id) {
-        this.categoryService.delete(id);
-    }
- }
+    void delete(final @PathVariable("id") String id);
+}
