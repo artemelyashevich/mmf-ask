@@ -3,6 +3,7 @@ package com.elyashevich.mmfask.api.controller.impl;
 import com.elyashevich.mmfask.api.controller.AuthController;
 import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.AuthResponseDto;
+import com.elyashevich.mmfask.api.dto.auth.RegisterDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import com.elyashevich.mmfask.service.AuthService;
 import jakarta.mail.MessagingException;
@@ -22,8 +23,8 @@ public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
 
     @Override
-    public void create(final @Validated @RequestBody AuthRequestDto authRequestDto) throws MessagingException {
-        this.authService.register(authRequestDto);
+    public void register(final @Validated @RequestBody RegisterDto dto) throws MessagingException {
+        this.authService.register(dto.email());
     }
 
     @Override
@@ -34,8 +35,9 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     public AuthResponseDto activate(
-            final @PathVariable("email") String email, final @RequestParam("code") String code) {
-        var token = this.authService.activateUser(email, code);
+            final @Validated @RequestBody AuthRequestDto dto, final @RequestParam("code") String code
+    ) {
+        var token = this.authService.activateUser(dto, code);
         return new AuthResponseDto(token);
     }
 

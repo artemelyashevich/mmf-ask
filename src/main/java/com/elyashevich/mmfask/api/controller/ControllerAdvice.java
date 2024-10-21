@@ -10,6 +10,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -34,21 +35,18 @@ public class ControllerAdvice {
     private static final String NOT_SUPPORTED_MESSAGE = "Http method with this URL not found.";
     private static final String TOKEN_EXPIRED_MESSAGE = "JWT expired.";
     private static final String ACCESS_DENIED_MESSAGE = "Access denied.";
+    private static final String INVALID_REQUEST_BODY_MESSAGE = "Required request body is missing.";
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionBody handleNotFound(final ResourceNotFoundException exception) {
-        var message = exception.getMessage() == null ? NOT_FOUND_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", NOT_FOUND_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), NOT_FOUND_MESSAGE);
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleAlreadyExists(final ResourceAlreadyExistsException exception) {
-        var message = exception.getMessage() == null ? ALREADY_EXISTS_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", ALREADY_EXISTS_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), ALREADY_EXISTS_MESSAGE);
     }
 
     @SuppressWarnings("all")
@@ -69,50 +67,44 @@ public class ControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleDuplicateKey(final MongoWriteException exception) {
-        var message = exception.getMessage() == null ? DUPLICATE_KEY_EXCEPTION : exception.getMessage();
-        log.warn("{} '{}'.", DUPLICATE_KEY_EXCEPTION, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), DUPLICATE_KEY_EXCEPTION);
     }
 
 
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionBody handleInvalidToken(final InvalidTokenException exception) {
-        var message = exception.getMessage() == null ? INVALID_TOKEN_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", INVALID_TOKEN_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), INVALID_TOKEN_MESSAGE);
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleInvalidPassword(final InvalidPasswordException exception) {
-        var message = exception.getMessage() == null ? INVALID_PASSWORD_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", INVALID_PASSWORD_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), INVALID_PASSWORD_MESSAGE);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionBody handleException(final HttpRequestMethodNotSupportedException exception) {
-        var message = exception.getMessage() == null ? NOT_SUPPORTED_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", NOT_SUPPORTED_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), NOT_SUPPORTED_MESSAGE);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionBody handleTokenExpire(final ExpiredJwtException exception) {
-        var message = exception.getMessage() == null ? TOKEN_EXPIRED_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", TOKEN_EXPIRED_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), TOKEN_EXPIRED_MESSAGE);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionBody handleDeniedException(final AuthorizationDeniedException exception) {
-        var message = exception.getMessage() == null ? ACCESS_DENIED_MESSAGE : exception.getMessage();
-        log.warn("{} '{}'.", ACCESS_DENIED_MESSAGE, message);
-        return new ExceptionBody(message);
+        return handleExceptionAdvice(exception.getMessage(), ACCESS_DENIED_MESSAGE);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleInvalidBody(final HttpMessageNotReadableException exception) {
+        return handleExceptionAdvice(exception.getMessage(), INVALID_REQUEST_BODY_MESSAGE);
     }
 
     @ExceptionHandler
@@ -121,5 +113,11 @@ public class ControllerAdvice {
         exception.printStackTrace();
         log.error(exception.getMessage(), exception.getCause());
         return new ExceptionBody(UNEXPECTED_ERROR_MESSAGE);
+    }
+
+    private static ExceptionBody handleExceptionAdvice(final String message, final String defaultMessage) {
+        var m = message == null ? defaultMessage : message;
+        log.warn("{} '{}'.", defaultMessage, m);
+        return new ExceptionBody(m);
     }
 }

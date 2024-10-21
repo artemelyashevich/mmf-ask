@@ -5,6 +5,9 @@ package com.elyashevich.mmfask.exception;
  */
 public class ResourceNotFoundException extends RuntimeException {
 
+    public ResourceNotFoundException() {
+    }
+
     /**
      * Constructs a ResourceNotFoundException with the specified detail message.
      *

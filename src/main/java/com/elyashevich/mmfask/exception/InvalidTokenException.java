@@ -5,6 +5,9 @@ package com.elyashevich.mmfask.exception;
  */
 public class InvalidTokenException extends RuntimeException {
 
+    public InvalidTokenException() {
+    }
+
     /**
      * Constructs an InvalidTokenException with the specified detail message.
      *
