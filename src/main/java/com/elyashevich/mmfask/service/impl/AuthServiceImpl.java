@@ -4,6 +4,7 @@ import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import com.elyashevich.mmfask.exception.InvalidPasswordException;
 import com.elyashevich.mmfask.exception.InvalidTokenException;
+import com.elyashevich.mmfask.service.ActivationCodeService;
 import com.elyashevich.mmfask.service.AuthService;
 import com.elyashevich.mmfask.service.MailService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
@@ -27,6 +28,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserServiceImpl userService;
     private final MailService mailService;
+    private final ActivationCodeService activationCodeService;
+
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
 
@@ -35,16 +38,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void register(final AuthRequestDto authRequestDto) throws MessagingException {
-        log.debug("Attempting to register a new user with email '{}'.", authRequestDto.email());
-
-        var candidate = this.userConverter.fromAuthDto(authRequestDto);
-        this.userService.create(candidate);
+    public void register(final String email) throws MessagingException {
+        log.debug("Attempting to save activation code to user with email '{}'.", email);
         var activationCode = generateActivationToken();
-        candidate.setActivationCode(activationCode);
-        this.mailService.sendMessage(authRequestDto.email(), activationCode, PATH_TO_ACTIVATE_ACCOUNT);
+        this.activationCodeService.create(activationCode, email);
+        this.mailService.sendMessage(email, activationCode, PATH_TO_ACTIVATE_ACCOUNT);
 
-        log.info("User with email '{}' has been registered.", authRequestDto.email());
+        log.info("Activation code has been created to user with email {}.", email);
     }
 
     @Override
@@ -61,19 +61,20 @@ public class AuthServiceImpl implements AuthService {
         return token;
     }
 
+    @Transactional
     @Override
-    public String activateUser(final String email, final String code) {
-        log.debug("Attempting to activate user with email '{}'.", email);
+    public String activateUser(final AuthRequestDto dto, final String code) {
+        log.debug("Attempting to activate user with email '{}'.", dto.email());
 
-        var user = this.userService.findByEmail(email);
-        if (!user.getActivationCode().equals(code)) {
+        var activationCode = this.activationCodeService.findByEmail(dto.email());
+        if (!activationCode.getValue().equals(code)) {
             throw new InvalidTokenException("Invalid activation code.");
         }
-        this.userService.activate(email);
-        var userDetails = this.userService.loadUserByUsername(email);
-        var token = generateToken(userDetails);
+        var candidate = this.userConverter.fromAuthDto(dto);
+        this.userService.create(candidate);
+        var token = generateToken(this.userService.loadUserByUsername(dto.email()));
 
-        log.info("User with email '{}' has been activated.", email);
+        log.info("User with email '{}' has been activated.", dto.email());
         return token;
     }
 
@@ -82,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
         log.debug("Attempting to send reset password code to user with email '{}'", email);
 
         var resetCode = generateActivationToken();
-        this.userService.setActivationCode(email, resetCode);
+        this.activationCodeService.update(email, resetCode);
         this.mailService.sendMessage(email, resetCode, PATH_TO_RESET_PASSWORD);
 
         log.info("Reset password code gas been sent to user with email '{}'.", email);

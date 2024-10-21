@@ -11,34 +11,31 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
-@Document(collection = "users")
+@Document(collection = "codes")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = "password")
+@ToString
 @EqualsAndHashCode
-public class User {
+public class ActivationCode {
 
     @Id
     private String id;
 
+    @TextIndexed
+    private String value;
+
     @Indexed(unique = true)
     private String email;
 
-    private String password;
-
-    private Set<Role> roles;
-
-    @DBRef
-    private AttachmentImage image;
+    private boolean isConfirmed;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

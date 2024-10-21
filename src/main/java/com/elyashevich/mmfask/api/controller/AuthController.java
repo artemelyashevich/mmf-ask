@@ -2,6 +2,7 @@ package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.AuthResponseDto;
+import com.elyashevich.mmfask.api.dto.auth.RegisterDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +31,7 @@ public interface AuthController {
     /**
      * Register a new user.
      *
-     * @param authRequestDto The AuthRequestDto containing user registration data.
+     * @param dto The email user for registration and activation code.
      * @throws MessagingException If an error occurs during message sending.
      */
     @Operation(
@@ -43,7 +44,7 @@ public interface AuthController {
     )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    void create(final @Validated @RequestBody AuthRequestDto authRequestDto) throws MessagingException;
+    void register(final @Validated @RequestBody RegisterDto dto) throws MessagingException;
 
     /**
      * Login a user and generate an authentication token.
@@ -67,7 +68,7 @@ public interface AuthController {
     /**
      * Activate a user account with email verification code.
      *
-     * @param email The email of the user to activate.
+     * @param dto The information of the user to activate.
      * @param code The verification code for activation.
      * @return AuthResponseDto object representing the activated user.
      */
@@ -82,7 +83,8 @@ public interface AuthController {
     )
     @PostMapping("/activate/{email}")
     AuthResponseDto activate(
-            final @PathVariable("email") String email, final @RequestParam("code") String code);
+            final @Validated @RequestBody AuthRequestDto dto, final @RequestParam("code") String code
+    );
 
     /**
      * Send a reset password code to the user's email.
