@@ -1,9 +1,9 @@
 package com.elyashevich.mmfask.api.controller.impl;
 
 import com.elyashevich.mmfask.api.controller.AuthController;
+import com.elyashevich.mmfask.api.dto.auth.ActivationDto;
 import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.AuthResponseDto;
-import com.elyashevich.mmfask.api.dto.auth.RegisterDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import com.elyashevich.mmfask.service.AuthService;
 import jakarta.mail.MessagingException;
@@ -23,21 +23,26 @@ public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
 
     @Override
-    public void register(final @Validated @RequestBody RegisterDto dto) throws MessagingException {
-        this.authService.register(dto.email());
+    public void activate(final @Validated @RequestBody ActivationDto dto) throws MessagingException {
+        this.authService.activate(dto.email());
+    }
+
+    @Override
+    public void activation(
+            final @PathVariable("email") String email, final @RequestParam("code") String code
+    ) {
+        this.authService.activateUser(email, code);
+    }
+
+    @Override
+    public AuthResponseDto register(final String email, final AuthRequestDto dto) {
+        var token = this.authService.register(email, dto);
+        return new AuthResponseDto(token);
     }
 
     @Override
     public AuthResponseDto login(final @Validated @RequestBody AuthRequestDto authRequestDto) {
         var token = this.authService.login(authRequestDto);
-        return new AuthResponseDto(token);
-    }
-
-    @Override
-    public AuthResponseDto activate(
-            final @Validated @RequestBody AuthRequestDto dto, final @RequestParam("code") String code
-    ) {
-        var token = this.authService.activateUser(dto, code);
         return new AuthResponseDto(token);
     }
 

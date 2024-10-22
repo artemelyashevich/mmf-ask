@@ -36,9 +36,8 @@ public class AuthServiceImpl implements AuthService {
     private final static String PATH_TO_RESET_PASSWORD = "reset_password";
     private final static String PATH_TO_ACTIVATE_ACCOUNT = "activate_account";
 
-    @Transactional
     @Override
-    public void register(final String email) throws MessagingException {
+    public void activate(final String email) throws MessagingException {
         log.debug("Attempting to save activation code to user with email '{}'.", email);
         var activationCode = generateActivationToken();
         this.activationCodeService.create(activationCode, email);
@@ -63,19 +62,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public String activateUser(final AuthRequestDto dto, final String code) {
-        log.debug("Attempting to activate user with email '{}'.", dto.email());
+    public void activateUser(final String email, final String code) {
+        log.debug("Attempting to activate user with email '{}'.", email);
 
-        var activationCode = this.activationCodeService.findByEmail(dto.email());
+        var activationCode = this.activationCodeService.findByEmail(email);
         if (!activationCode.getValue().equals(code)) {
             throw new InvalidTokenException("Invalid activation code.");
         }
-        var candidate = this.userConverter.fromAuthDto(dto);
-        this.userService.create(candidate);
-        var token = generateToken(this.userService.loadUserByUsername(dto.email()));
-
-        log.info("User with email '{}' has been activated.", dto.email());
-        return token;
+        activationCode.setConfirmed(true);
+        this.activationCodeService.setConfirmed(activationCode);
     }
 
     @Override
@@ -104,6 +99,17 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Password of user with email '{}' has been reseted.", email);
         return token;
+    }
+
+    @Transactional
+    @Override
+    public String register(String email, AuthRequestDto dto) {
+        if (!this.activationCodeService.findByEmail(email).isConfirmed()) {
+            throw new InvalidTokenException("Code mismatch.");
+        }
+        var candidate = this.userConverter.fromAuthDto(new AuthRequestDto(email, dto.password()));
+        this.userService.create(candidate);
+        return generateToken(this.userService.loadUserByUsername(email));
     }
 
     private static String generateToken(final UserDetails userDetails) {
