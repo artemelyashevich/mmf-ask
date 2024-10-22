@@ -9,4 +9,6 @@ public interface ActivationCodeService {
     ActivationCode create(final String code, final String email);
 
     void update(final String email, final String resetCode);
+
+    void setConfirmed(final ActivationCode activationCode);
 }

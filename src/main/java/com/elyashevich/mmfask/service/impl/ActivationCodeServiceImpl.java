@@ -36,4 +36,12 @@ public class ActivationCodeServiceImpl implements ActivationCodeService {
         code.setValue(resetCode);
         this.activationCodeRepository.save(code);
     }
+
+    @Transactional
+    @Override
+    public void setConfirmed(ActivationCode activationCode) {
+        var code = this.findByEmail(activationCode.getEmail());
+        code.setConfirmed(!code.isConfirmed());
+        this.activationCodeRepository.save(code);
+    }
 }

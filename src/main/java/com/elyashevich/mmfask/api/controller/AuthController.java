@@ -1,8 +1,8 @@
 package com.elyashevich.mmfask.api.controller;
 
+import com.elyashevich.mmfask.api.dto.auth.ActivationDto;
 import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.AuthResponseDto;
-import com.elyashevich.mmfask.api.dto.auth.RegisterDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,16 +35,41 @@ public interface AuthController {
      * @throws MessagingException If an error occurs during message sending.
      */
     @Operation(
-            summary = "Register a new user",
-            description = "Register a new user"
+            summary = "Trying to activate a new user",
+            description = "Activation a new user"
     )
     @ApiResponse(
             responseCode = "201",
             description = "Activation code sent"
     )
-    @PostMapping("/register")
+    @PostMapping("/activate")
     @ResponseStatus(HttpStatus.CREATED)
-    void register(final @Validated @RequestBody RegisterDto dto) throws MessagingException;
+    void activate(final @Validated @RequestBody ActivationDto dto) throws MessagingException;
+
+    /**
+     * Activate a user account with email verification code.
+     *
+     * @param email The information of the user to activate.
+     * @param code The verification code for activation.
+     */
+    @Operation(
+            summary = "Activate user account",
+            description = "Activate user account with email verification code"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "User activated",
+            content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+    )
+    @PostMapping("/activate/{email}")
+    void activation(
+            final @PathVariable("email") String email, final @RequestParam("code") String code
+    );
+
+    @PostMapping("/register/{email}")
+    AuthResponseDto register(
+            final @PathVariable("email") String email, final @Validated @RequestBody AuthRequestDto dto
+    );
 
     /**
      * Login a user and generate an authentication token.
@@ -64,27 +89,6 @@ public interface AuthController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.CREATED)
     AuthResponseDto login(final @Validated @RequestBody AuthRequestDto authRequestDto);
-
-    /**
-     * Activate a user account with email verification code.
-     *
-     * @param dto The information of the user to activate.
-     * @param code The verification code for activation.
-     * @return AuthResponseDto object representing the activated user.
-     */
-    @Operation(
-            summary = "Activate user account",
-            description = "Activate user account with email verification code"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "User activated",
-            content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
-    )
-    @PostMapping("/activate/{email}")
-    AuthResponseDto activate(
-            final @Validated @RequestBody AuthRequestDto dto, final @RequestParam("code") String code
-    );
 
     /**
      * Send a reset password code to the user's email.
