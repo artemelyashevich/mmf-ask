@@ -28,6 +28,3 @@ services:
       SPRING_MAIL_USERNAME: mmfask2024@gmail.com
       SPRING_MAIL_PASSWORD: syvg ndjv wvdb tjlp
       SPRING_MAIL_SENDER_EMAIL: mmfask2024@gmail.com
-
-
-

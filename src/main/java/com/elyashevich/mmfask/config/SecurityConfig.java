@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +28,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomCorsConfiguration customCorsConfiguration;
 
     private final SecurityFilter securityFilter;
     private static final String ROLE_GUEST = "GUEST";
@@ -69,7 +73,7 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(c -> c.configurationSource(customCorsConfiguration))
                 .build();
     }
 

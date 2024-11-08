@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         );
     }
 
+    @Transactional
     @Override
     public User activate(final String email) {
         log.debug("Attempting to activate user with email '{}'.", email);
