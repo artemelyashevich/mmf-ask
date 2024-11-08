@@ -10,6 +10,7 @@ public record AuthRequestDto(
         @Email(message = "Invalid email format.")
         String email,
 
+        @NotNull(message = "Password must be not null.")
         @Length(
                 min = 8,
                 message = "Password must must contain {min} symbols."

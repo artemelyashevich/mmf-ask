@@ -14,7 +14,7 @@ import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthControllerImpl implements AuthController {
+public class AAuthControllerImpl implements AuthController {
 
     private final AuthService authService;
 
