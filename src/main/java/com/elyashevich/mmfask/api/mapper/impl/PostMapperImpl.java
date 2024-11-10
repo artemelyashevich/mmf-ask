@@ -33,6 +33,8 @@ public class PostMapperImpl implements PostMapper {
                 this.programmingLanguageMapper.toDto(entity.getProgrammingLanguage()),
                 this.categoryMapper.toDto(entity.getCategories()),
                 entity.getViews(),
+                entity.getLikes(),
+                entity.getDislikes(),
                 entity.getAttachmentImages()
                         .stream()
                         .map(ImageUtil::generatePath)

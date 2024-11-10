@@ -21,7 +21,7 @@ public class CommentControllerImpl implements CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
- @Override
+    @Override
     public List<CommentResponseDto> findAll(
             final @RequestParam(name = "postId", defaultValue = "", required = false) String postId,
             final @RequestParam(name = "userId", defaultValue = "", required = false) String userId
@@ -34,6 +34,26 @@ public class CommentControllerImpl implements CommentController {
     public CommentResponseDto findById(final @PathVariable("commentId") String id) {
         var comment = this.commentService.findById(id);
         return this.commentMapper.toResponseDto(comment);
+    }
+
+    @Override
+    public void like(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.commentService.like(id);
+    }
+
+    @Override
+    public void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.commentService.undoLike(id);
+    }
+
+    @Override
+    public void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.commentService.dislike(id);
+    }
+
+    @Override
+    public void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.commentService.undoDislike(id);
     }
 
     @Override

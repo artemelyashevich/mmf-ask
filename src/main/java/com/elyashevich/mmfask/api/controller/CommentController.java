@@ -70,6 +70,50 @@ public interface CommentController {
     CommentResponseDto findById(final @PathVariable("commentId") String id);
 
     /**
+     * Endpoint to like a comment with a specific ID.
+     *
+     * @param id    The ID of the comment to like.
+     * @param email The email of the user performing the like action.
+     */
+    @PostMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void like(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
+     * Endpoint to undo a like on a comment with a specific ID.
+     *
+     * @param id    The ID of the comment to undo the like action.
+     * @param email The email of the user performing the undo like action.
+     */
+    @DeleteMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
+     * Endpoint to dislike a comment with a specific ID.
+     *
+     * @param id    The ID of the item to dislike.
+     * @param email The email of the user performing the dislike action.
+     */
+    @PostMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
+     * Endpoint to undo a dislike on a comment with a specific ID.
+     *
+     * @param id    The ID of the comment to undo the dislike action.
+     * @param email The email of the user performing the undo dislike action.
+     */
+    @DeleteMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
      * Create a new comment.
      *
      * @param dto The CommentRequestDto containing the new comment data.

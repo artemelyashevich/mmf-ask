@@ -73,7 +73,8 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(c -> c.configurationSource(customCorsConfiguration))
+                //.cors(c -> c.configurationSource(customCorsConfiguration))
+                .cors(AbstractHttpConfigurer::disable)
                 .build();
     }
 

@@ -75,6 +75,50 @@ public interface PostController {
     PostResponseDto findById(final @PathVariable("id") String id);
 
     /**
+     * Endpoint to like a post with a specific ID.
+     *
+     * @param id    The ID of the post to like.
+     * @param email The email of the user performing the like action.
+     */
+    @PostMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void like(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
+     * Endpoint to undo a like on a post with a specific ID.
+     *
+     * @param id    The ID of the post to undo the like action.
+     * @param email The email of the user performing the undo like action.
+     */
+    @DeleteMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
+     * Endpoint to dislike a post with a specific ID.
+     *
+     * @param id    The ID of the post to dislike.
+     * @param email The email of the user performing the dislike action.
+     */
+    @PostMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
+     * Endpoint to undo a dislike on a post with a specific ID.
+     *
+     * @param id    The ID of the post to undo the dislike action.
+     * @param email The email of the user performing the undo dislike action.
+     */
+    @DeleteMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    /**
      * Create a new post.
      *
      * @param dto The request data for creating the post.

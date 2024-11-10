@@ -23,7 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 public class Post {
 
@@ -50,6 +49,10 @@ public class Post {
 
     private Long views;
 
+    private Long likes;
+
+    private Long dislikes;
+
     @DBRef
     private Set<AttachmentImage> attachmentImages;
 
@@ -62,4 +65,24 @@ public class Post {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Post{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", title='").append(title).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", creator=").append(creator);
+        sb.append(", programmingLanguage=").append(programmingLanguage);
+        sb.append(", categories=").append(categories);
+        sb.append(", comments=").append(comments);
+        sb.append(", views=").append(views);
+        sb.append(", likes=").append(likes);
+        sb.append(", dislikes=").append(dislikes);
+        sb.append(", attachmentImages=").append(attachmentImages);
+        sb.append(", createdAt=").append(createdAt);
+        sb.append(", updatedAt=").append(updatedAt);
+        sb.append('}');
+        return sb.toString();
+    }
 }

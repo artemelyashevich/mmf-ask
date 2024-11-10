@@ -2,6 +2,7 @@ package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.api.dto.comment.CommentRequestDto;
 import com.elyashevich.mmfask.entity.Comment;
+import com.elyashevich.mmfask.service.contract.CrudService;
 
 import java.util.List;
 
@@ -44,6 +45,14 @@ public interface CommentService {
      * @return The updated Comment object.
      */
     Comment update(final String id, final CommentRequestDto dto);
+
+    void like(final String id);
+
+    void undoLike(final String id);
+
+    void dislike(final String id);
+
+    void undoDislike(final String id);
 
     /**
      * Deletes a comment by its ID.

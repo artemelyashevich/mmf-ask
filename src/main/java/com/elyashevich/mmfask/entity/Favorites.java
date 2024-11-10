@@ -22,7 +22,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 public class Favorites {
 
@@ -44,4 +43,16 @@ public class Favorites {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Favorites{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", user=").append(user);
+        sb.append(", posts=").append(posts);
+        sb.append(", createdAt=").append(createdAt);
+        sb.append(", updatedAt=").append(updatedAt);
+        sb.append('}');
+        return sb.toString();
+    }
 }

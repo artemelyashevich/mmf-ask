@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 public record AuthRequestDto(
 
         @NotNull(message = "Email must be not null.")
-        @Email(message = "Invalid email format.")
+        @Email(message = "Invalid email format. ")
         String email,
 
         @NotNull(message = "Password must be not null.")

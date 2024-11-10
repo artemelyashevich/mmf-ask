@@ -18,6 +18,8 @@ public class CommentMapperImpl implements CommentMapper {
                 comment.getUser().getId(),
                 comment.getPost().getId(),
                 comment.getBody(),
+                comment.getLikes(),
+                comment.getDislikes(),
                 comment.getCreatedAt(),
                 comment.getUpdatedAt()
         );

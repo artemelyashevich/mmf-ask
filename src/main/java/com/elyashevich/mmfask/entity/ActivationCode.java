@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 public class ActivationCode {
 
@@ -46,4 +45,17 @@ public class ActivationCode {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ActivationCode{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", value='").append(value).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", isConfirmed=").append(isConfirmed);
+        sb.append(", createdAt=").append(createdAt);
+        sb.append(", updatedAt=").append(updatedAt);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -53,6 +53,7 @@ public class PostServiceImpl implements PostService {
                 );
     }
 
+    @Transactional
     @Override
     public Post findById(final String id) {
         return this.postRepository.findById(id)
@@ -61,7 +62,6 @@ public class PostServiceImpl implements PostService {
                 );
     }
 
-    @Transactional
     @Override
     public Post create(final Post dto) {
         log.debug("Attempting to create a new post with title '{}'.", dto.getTitle());
@@ -112,6 +112,44 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
+    public void like(final String id) {
+        var post = this.findById(id);
+        post.setLikes(post.getLikes() + 1);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void undoLike(final String id) {
+        var post = this.findById(id);
+        if (post.getLikes() == 0) {
+            throw new RuntimeException("");
+        }
+        post.setLikes(post.getLikes() - 1);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void dislike(final String id) {
+        var post = this.findById(id);
+        post.setDislikes(post.getDislikes() + 1);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void undoDislike(final String id) {
+        var post = this.findById(id);
+        if (post.getDislikes() == 0) {
+            throw new RuntimeException("");
+        }
+        post.setDislikes(post.getDislikes() - 1);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
     public void delete(final String id) {
         log.debug("Attempting to delete a post with id '{}'.", id);
 
@@ -131,6 +169,13 @@ public class PostServiceImpl implements PostService {
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
         dto.setCreator(user);
+        dto.setViews(0L);
+        dto.setLikes(0L);
+        dto.setDislikes(0L);
         return dto;
+    }
+
+    private double calculateRating(int oldRating, int val) {
+        return oldRating + val;
     }
 }

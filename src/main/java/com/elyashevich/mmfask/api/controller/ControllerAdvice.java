@@ -98,6 +98,7 @@ public class ControllerAdvice {
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionBody handleDeniedException(final AuthorizationDeniedException exception) {
+        exception.printStackTrace();
         return handleExceptionAdvice(exception.getMessage(), ACCESS_DENIED_MESSAGE);
     }
 

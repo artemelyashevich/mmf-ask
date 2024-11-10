@@ -1,16 +1,15 @@
 package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.entity.Post;
+import com.elyashevich.mmfask.service.contract.CrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * Service interface for managing posts.
  */
-public interface PostService {
+public interface PostService extends CrudService<Post> {
 
     /**
      * Retrieves all posts.
@@ -28,38 +27,6 @@ public interface PostService {
     Post findByName(final String name);
 
     /**
-     * Finds a post by ID.
-     *
-     * @param id the ID of the post to find
-     * @return the found post
-     */
-    Post findById(final String id);
-
-    /**
-     * Creates a new post.
-     *
-     * @param dto the post DTO to create
-     * @return the created post
-     */
-    Post create(final Post dto);
-
-    /**
-     * Updates a post by ID.
-     *
-     * @param id the ID of the post to update
-     * @param dto the updated post DTO
-     * @return the updated post
-     */
-    Post update(final String id, final Post dto);
-
-    /**
-     * Deletes a post by ID.
-     *
-     * @param id the ID of the post to delete
-     */
-    void delete(final String id);
-
-    /**
      * Uploads a file for a specific post.
      *
      * @param id    the ID of the post to upload the file for
@@ -68,4 +35,12 @@ public interface PostService {
      * @throws Exception if an error occurs during file upload
      */
     Post uploadFile(final String id, final MultipartFile[] files) throws Exception;
+
+    void like(final String id);
+
+    void undoLike(final String id);
+
+    void dislike(final String id);
+
+    void undoDislike(final String id);
 }

@@ -15,13 +15,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Document(collection = "images")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 @EqualsAndHashCode
 public class AttachmentImage {
 
@@ -44,4 +44,17 @@ public class AttachmentImage {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("AttachmentImage{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", filename='").append(filename).append('\'');
+        sb.append(", filetype='").append(filetype).append('\'');
+        sb.append(", bytes=").append(Arrays.toString(bytes));
+        sb.append(", createdAt=").append(createdAt);
+        sb.append(", updatedAt=").append(updatedAt);
+        sb.append('}');
+        return sb.toString();
+    }
 }

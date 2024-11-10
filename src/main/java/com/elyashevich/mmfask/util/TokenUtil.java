@@ -19,7 +19,7 @@ public class TokenUtil {
 
     private final String secret = "984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf";
 
-    private final Long lifetime = 86_400_000L;
+    private final Long TOKEN_LIFETIME = 86_400_000L;
 
     public static String extractEmailClaims(final String token) {
         return getClaimsFromToken(token).getSubject();
@@ -49,7 +49,9 @@ public class TokenUtil {
     }
 
     private static String createToken(final UserDetails userDetails) {
-        Date issuedAt = new Date();
+        var issuedAt = new Date();
+        var expirationDate = new Date(issuedAt.getTime() + TOKEN_LIFETIME);
+
         return Jwts.builder()
                 .setClaims(
                         Map.of(
@@ -61,7 +63,7 @@ public class TokenUtil {
                 )
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(issuedAt)
-                .setExpiration(new Date(issuedAt.getTime() + lifetime))
+                .setExpiration(expirationDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -40,6 +40,26 @@ public class PostControllerImpl implements PostController {
     }
 
     @Override
+    public void like(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.postService.like(id);
+    }
+
+    @Override
+    public void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.postService.undoLike(id);
+    }
+
+    @Override
+    public void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.postService.dislike(id);
+    }
+
+    @Override
+    public void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
+        this.postService.undoDislike(id);
+    }
+
+    @Override
     public PostResponseDto create(final @RequestBody @Validated PostRequestDto dto) {
         var post = this.postService.create(this.postMapper.toEntity(dto));
         post.setAttachmentImages(new HashSet<>());
