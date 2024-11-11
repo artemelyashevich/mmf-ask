@@ -88,6 +88,46 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
+    public void like(final String id) {
+        var post = this.findById(id);
+        post.setLikes(post.getLikes() + 1);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void undoLike(final String id) {
+        var post = this.findById(id);
+        if (post.getLikes() == 0) {
+            throw new RuntimeException("");
+        }
+        post.setLikes(post.getLikes() - 1);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void dislike(final String id) {
+        var post = this.findById(id);
+        post.setDislikes(post.getDislikes() + 1);
+        this.postRepository.save(post);
+
+    }
+
+    @Transactional
+    @Override
+    public void undoDislike(final String id) {
+        var post = this.findById(id);
+        if (post.getDislikes() == 0) {
+            throw new RuntimeException("");
+        }
+        post.setDislikes(post.getDislikes() - 1);
+        this.postRepository.save(post);
+
+    }
+
+    @Transactional
+    @Override
     public Post uploadFile(final String id, final MultipartFile[] files) throws Exception {
         log.debug("Attempting to upload image to post with ID '{}'.", id);
 
@@ -131,6 +171,9 @@ public class PostServiceImpl implements PostService {
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
         dto.setCreator(user);
+        dto.setLikes(0L);
+        dto.setViews(0L);
+        dto.setDislikes(0L);
         return dto;
     }
 }

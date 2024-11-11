@@ -52,6 +52,14 @@ public interface PostService {
      */
     Post update(final String id, final Post dto);
 
+    void like(final String id);
+
+    void undoLike(final String id);
+
+    void dislike(final String id);
+
+    void undoDislike(final String id);
+
     /**
      * Deletes a post by ID.
      *

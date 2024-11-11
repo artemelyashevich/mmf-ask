@@ -50,6 +50,10 @@ public class Post {
 
     private Long views;
 
+    private Long likes;
+
+    private Long dislikes;
+
     @DBRef
     private Set<AttachmentImage> attachmentImages;
 

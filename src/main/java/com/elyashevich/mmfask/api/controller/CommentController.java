@@ -2,6 +2,7 @@ package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.comment.CommentRequestDto;
 import com.elyashevich.mmfask.api.dto.comment.CommentResponseDto;
+import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -72,7 +73,7 @@ public interface CommentController {
     /**
      * Create a new comment.
      *
-     * @param dto The CommentRequestDto containing the new comment data.
+     * @param dto   The CommentRequestDto containing the new comment data.
      * @param email The email of the user creating the comment.
      * @return CommentResponseDto object representing the created comment.
      */
@@ -93,11 +94,31 @@ public interface CommentController {
             final @RequestParam("email") String email
     );
 
+    @PostMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void like(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @DeleteMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @PostMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @DeleteMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
     /**
      * Update an existing comment by its ID.
      *
-     * @param id The ID of the comment to update.
-     * @param dto The updated CommentRequestDto data.
+     * @param id    The ID of the comment to update.
+     * @param dto   The updated CommentRequestDto data.
      * @param email The email of the user updating the comment.
      * @return CommentResponseDto object representing the updated comment.
      */
@@ -121,7 +142,7 @@ public interface CommentController {
     /**
      * Delete a comment by its ID.
      *
-     * @param id The ID of the comment to delete.
+     * @param id    The ID of the comment to delete.
      * @param email The email of the user deleting the comment.
      */
     @Operation(

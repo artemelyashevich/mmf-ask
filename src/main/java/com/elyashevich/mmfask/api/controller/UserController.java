@@ -1,6 +1,7 @@
 package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.user.UserDto;
+import com.elyashevich.mmfask.api.dto.user.UserStatisticsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,6 +57,9 @@ public interface UserController {
     )
     @GetMapping("/{id}")
     UserDto findById(final @PathVariable("id") String id);
+
+    @GetMapping("/statistics")
+    UserStatisticsDto findStatistics();
 
     /**
      * Upload user image.

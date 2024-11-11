@@ -25,6 +25,10 @@ public record PostResponseDto(
 
         Set<String> images,
 
+        Long likes,
+
+        Long dislikes,
+
         LocalDateTime createdAt,
 
         LocalDateTime updatedAt

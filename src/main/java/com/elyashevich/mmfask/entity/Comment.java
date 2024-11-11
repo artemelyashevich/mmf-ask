@@ -38,6 +38,10 @@ public class Comment {
     @TextIndexed
     private String body;
 
+    private Long likes;
+
+    private Long dislikes;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @CreatedDate

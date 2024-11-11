@@ -39,9 +39,9 @@ public class AuthServiceImpl implements AuthService {
         log.debug("Attempting to register a new user with email '{}'.", authRequestDto.email());
 
         var candidate = this.userConverter.fromAuthDto(authRequestDto);
-        this.userService.create(candidate);
         var activationCode = generateActivationToken();
         candidate.setActivationCode(activationCode);
+        this.userService.create(candidate);
         this.mailService.sendMessage(authRequestDto.email(), activationCode, PATH_TO_ACTIVATE_ACCOUNT);
 
         log.info("User with email '{}' has been registered.", authRequestDto.email());

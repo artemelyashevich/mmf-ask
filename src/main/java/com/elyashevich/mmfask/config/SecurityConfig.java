@@ -16,8 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +40,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
+                        request.anyRequest().permitAll()
                         request.requestMatchers(HttpMethod.POST, "api/v1/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
@@ -66,6 +65,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "api/v1/programming-languages/**").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.DELETE, "api/v1/users/*").hasRole(ROLE_ADMIN)
                                 .requestMatchers(HttpMethod.PUT, "api/v1/users/*").hasRole(ROLE_ADMIN)
+                                .requestMatchers(HttpMethod.GET, "api/v1/users/statistics").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.GET, "api/v1/posts/statistics").hasRole(ROLE_MODERATOR)
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

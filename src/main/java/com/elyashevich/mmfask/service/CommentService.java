@@ -45,6 +45,14 @@ public interface CommentService {
      */
     Comment update(final String id, final CommentRequestDto dto);
 
+    void like(final String id);
+
+    void undoLike(final String id);
+
+    void dislike(final String id);
+
+    void undoDislike(final String id);
+
     /**
      * Deletes a comment by its ID.
      *

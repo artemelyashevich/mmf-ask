@@ -37,6 +37,8 @@ public class PostMapperImpl implements PostMapper {
                         .stream()
                         .map(ImageUtil::generatePath)
                         .collect(Collectors.toSet()),
+                entity.getLikes(),
+                entity.getDislikes(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

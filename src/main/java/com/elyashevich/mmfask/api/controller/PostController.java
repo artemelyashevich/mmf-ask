@@ -2,6 +2,7 @@ package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.post.PostRequestDto;
 import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
+import com.elyashevich.mmfask.api.dto.post.PostStatisticsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,8 +37,8 @@ public interface PostController {
      * Find all posts.
      *
      * @param query The search query.
-     * @param page The page number.
-     * @param size The size of each page.
+     * @param page  The page number.
+     * @param size  The size of each page.
      * @return Page of PostResponseDto objects representing the paginated list of posts.
      */
     @Operation(
@@ -74,6 +75,26 @@ public interface PostController {
     @GetMapping("/{id}")
     PostResponseDto findById(final @PathVariable("id") String id);
 
+    @PostMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void like(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @DeleteMapping("/{id}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @PostMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @DeleteMapping("/{id}/dislike")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("#email == authentication.principal")
+    void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
     /**
      * Create a new post.
      *
@@ -97,7 +118,7 @@ public interface PostController {
     /**
      * Upload image for a post.
      *
-     * @param id The ID of the post for which images are being uploaded.
+     * @param id    The ID of the post for which images are being uploaded.
      * @param files The image files to upload.
      * @param email The email of the user uploading the images.
      * @return PostResponseDto object representing the post with the uploaded images.
@@ -124,8 +145,8 @@ public interface PostController {
     /**
      * Update a post.
      *
-     * @param id The ID of the post to update.
-     * @param dto The updated post data.
+     * @param id    The ID of the post to update.
+     * @param dto   The updated post data.
      * @param email The email of the user updating the post.
      * @return PostResponseDto object representing the updated post.
      */
@@ -149,7 +170,7 @@ public interface PostController {
     /**
      * Delete a post.
      *
-     * @param id The ID of the post to delete.
+     * @param id    The ID of the post to delete.
      * @param email The email of the user deleting the post.
      */
     @Operation(
@@ -164,4 +185,7 @@ public interface PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("#email == authentication.principal")
     void delete(final @PathVariable("id") String id, final @RequestParam("email") String email);
+
+    @GetMapping("/statistics")
+    PostStatisticsDto findStatistics();
 }

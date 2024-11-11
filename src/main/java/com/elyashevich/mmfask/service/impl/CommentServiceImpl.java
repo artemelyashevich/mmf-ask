@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment findById(final String id) {
         return this.commentRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Comment with id = %s was not found.".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Comment with id = %s was not found.".formatted(id)));
     }
 
     @Transactional
@@ -47,6 +47,8 @@ public class CommentServiceImpl implements CommentService {
                 .user(user)
                 .post(post)
                 .body(dto.body())
+                .likes(0L)
+                .dislikes(0L)
                 .build();
         var savedComment = this.commentRepository.save(comment);
 
@@ -61,10 +63,48 @@ public class CommentServiceImpl implements CommentService {
 
         var comment = this.findById(id);
         comment.setBody(dto.body());
-        var savedUser =  this.commentRepository.save(comment);
+        var savedUser = this.commentRepository.save(comment);
 
         log.info("Comment with id '{}' has been updated.", id);
         return savedUser;
+    }
+
+    @Transactional
+    @Override
+    public void like(final String id) {
+        var comment = this.findById(id);
+        comment.setLikes(comment.getLikes() + 1);
+        this.commentRepository.save(comment);
+    }
+
+    @Transactional
+    @Override
+    public void undoLike(final String id) {
+        var comment = this.findById(id);
+        if (comment.getLikes() == 0) {
+            throw new RuntimeException("");
+        }
+        comment.setLikes(comment.getLikes() - 1);
+        this.commentRepository.save(comment);
+    }
+
+    @Transactional
+    @Override
+    public void dislike(final String id) {
+        var comment = this.findById(id);
+        comment.setDislikes(comment.getDislikes() + 1);
+        this.commentRepository.save(comment);
+    }
+
+    @Transactional
+    @Override
+    public void undoDislike(final String id) {
+        var comment = this.findById(id);
+        if (comment.getDislikes() == 0) {
+            throw new RuntimeException("");
+        }
+        comment.setDislikes(comment.getDislikes() - 1);
+        this.commentRepository.save(comment);
     }
 
     @Transactional
