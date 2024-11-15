@@ -1,10 +1,13 @@
 package com.elyashevich.mmfask.service.impl;
 
+import com.elyashevich.mmfask.api.dto.category.CategoryStatisticsDto;
 import com.elyashevich.mmfask.api.dto.post.PostStatisticsDto;
 import com.elyashevich.mmfask.api.dto.user.UserStatisticsDto;
+import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.entity.Post;
+import com.elyashevich.mmfask.repository.CategoryRepository;
 import com.elyashevich.mmfask.repository.PostRepository;
 import com.elyashevich.mmfask.repository.UserRepository;
 import com.elyashevich.mmfask.service.StatisticService;
@@ -20,9 +23,13 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final PostRepository postRepository;
 
+    private final CategoryRepository categoryRepository;
+
     private final PostMapper postMapper;
 
     private final UserMapper userMapper;
+
+    private final CategoryMapper categoryMapper;
 
     @Override
     public UserStatisticsDto userStatistic() {
@@ -39,5 +46,12 @@ public class StatisticServiceImpl implements StatisticService {
                 posts.stream().mapToLong(Post::getLikes).sum() + posts.stream().mapToLong(Post::getDislikes).sum()
         ) / 2;
         return new PostStatisticsDto(countOfPosts, averageRating, this.postMapper.toDto(posts));
+    }
+
+    @Override
+    public CategoryStatisticsDto categoryStatistics() {
+        var categories = this.categoryRepository.findAll();
+        var countOfCategories = (long) categories.size();
+        return new CategoryStatisticsDto(countOfCategories, this.categoryMapper.toDto(categories));
     }
 }

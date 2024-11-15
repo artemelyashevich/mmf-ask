@@ -1,6 +1,7 @@
 package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.category.CategoryDto;
+import com.elyashevich.mmfask.api.dto.category.CategoryStatisticsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -101,6 +102,9 @@ public interface CategoryController {
             final @PathVariable("id") String id,
             final @Validated @RequestBody CategoryDto categoryDto
     );
+
+    @GetMapping("/statistics")
+    CategoryStatisticsDto findStatistics();
 
     /**
      * Delete a category by its ID.
