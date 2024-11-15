@@ -59,6 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers("api/v1/favorites/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/auth/reset-password/*").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(ROLE_MODERATOR)
+                                .requestMatchers(HttpMethod.GET, "api/v1/posts/statistics/all").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "api/v1/categories/**").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.DELETE, "api/v1/categories/**").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.POST, "api/v1/programming-languages").hasRole(ROLE_MODERATOR)
@@ -73,8 +74,7 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
-                //.cors(c -> c.configurationSource(customCorsConfiguration))
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(c -> c.configurationSource(customCorsConfiguration))
                 .build();
     }
 
