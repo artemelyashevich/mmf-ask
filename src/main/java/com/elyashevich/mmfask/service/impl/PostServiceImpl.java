@@ -53,7 +53,6 @@ public class PostServiceImpl implements PostService {
                 );
     }
 
-    @Transactional
     @Override
     public Post findById(final String id) {
         return this.postRepository.findById(id)
@@ -62,6 +61,7 @@ public class PostServiceImpl implements PostService {
                 );
     }
 
+    @Transactional
     @Override
     public Post create(final Post dto) {
         log.debug("Attempting to create a new post with title '{}'.", dto.getTitle());
@@ -83,30 +83,6 @@ public class PostServiceImpl implements PostService {
         var updatedPost = this.postRepository.save(post);
 
         log.info("Post with ID '{}' has been updated.", dto.getId());
-        return updatedPost;
-    }
-
-    @Transactional
-    @Override
-    public Post uploadFile(final String id, final MultipartFile[] files) throws Exception {
-        log.debug("Attempting to upload image to post with ID '{}'.", id);
-
-        var post = this.findById(id);
-        var images = post.getAttachmentImages() != null
-                ? post.getAttachmentImages()
-                : new HashSet<AttachmentImage>();
-        Arrays.stream(files).forEach(file -> {
-            try {
-                images.add(this.attachmentService.create(file));
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException("Something went wrong.");
-            }
-        });
-        post.setAttachmentImages(images);
-        var updatedPost = this.postRepository.save(post);
-
-        log.info("Post with ID '{}' has been updated.", id);
         return updatedPost;
     }
 
@@ -135,6 +111,7 @@ public class PostServiceImpl implements PostService {
         var post = this.findById(id);
         post.setDislikes(post.getDislikes() + 1);
         this.postRepository.save(post);
+
     }
 
     @Transactional
@@ -146,6 +123,31 @@ public class PostServiceImpl implements PostService {
         }
         post.setDislikes(post.getDislikes() - 1);
         this.postRepository.save(post);
+
+    }
+
+    @Transactional
+    @Override
+    public Post uploadFile(final String id, final MultipartFile[] files) throws Exception {
+        log.debug("Attempting to upload image to post with ID '{}'.", id);
+
+        var post = this.findById(id);
+        var images = post.getAttachmentImages() != null
+                ? post.getAttachmentImages()
+                : new HashSet<AttachmentImage>();
+        Arrays.stream(files).forEach(file -> {
+            try {
+                images.add(this.attachmentService.create(file));
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Something went wrong.");
+            }
+        });
+        post.setAttachmentImages(images);
+        var updatedPost = this.postRepository.save(post);
+
+        log.info("Post with ID '{}' has been updated.", id);
+        return updatedPost;
     }
 
     @Transactional
@@ -169,13 +171,9 @@ public class PostServiceImpl implements PostService {
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
         dto.setCreator(user);
-        dto.setViews(0L);
         dto.setLikes(0L);
+        dto.setViews(0L);
         dto.setDislikes(0L);
         return dto;
-    }
-
-    private double calculateRating(int oldRating, int val) {
-        return oldRating + val;
     }
 }

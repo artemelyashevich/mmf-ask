@@ -86,4 +86,11 @@ public interface UserService {
      */
     User resetPassword(final String email, final String code, final String oldPassword, final String newPassword);
 
+    /**
+     * Sets the activation code for a user.
+     *
+     * @param email     The email of the user.
+     * @param resetCode The reset code to be set.
+     */
+    void setActivationCode(final String email, final String resetCode);
 }

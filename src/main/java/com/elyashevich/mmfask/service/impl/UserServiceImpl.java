@@ -7,7 +7,6 @@ import com.elyashevich.mmfask.exception.InvalidTokenException;
 import com.elyashevich.mmfask.exception.ResourceAlreadyExistsException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.UserRepository;
-import com.elyashevich.mmfask.service.ActivationCodeService;
 import com.elyashevich.mmfask.service.AttachmentService;
 import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
@@ -34,7 +33,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
     private final AttachmentService attachmentService;
-    private final ActivationCodeService activationCodeService;
 
     @Override
     public List<User> findAll() {
@@ -82,6 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         candidate.setImage(null);
         candidate.setRoles(Set.of(Role.ROLE_GUEST));
         candidate.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        candidate.setActivationCode(user.getActivationCode());
         var newUser = this.userRepository.save(candidate);
 
         log.info("User with email '{}' has been created.", user.getEmail());
@@ -142,9 +141,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     ) {
         log.debug("Attempting to reset password of user with email '{}'.", email);
 
-        var activationCode = this.activationCodeService.findByEmail(email);
         var user = this.findByEmail(email);
-        if (!activationCode.getValue().equals(code)) {
+        if (!user.getActivationCode().equals(code)) {
             throw new InvalidTokenException("Invalid reset code.");
         }
         if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -155,6 +153,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         log.info("Password of user with email '{}' has been reseted.", email);
         return savedUser;
+    }
+
+    @Transactional
+    @Override
+    public void setActivationCode(final String email, final String resetCode) {
+        log.debug("Attempting to activate user with email '{}'.", email);
+
+        var user = this.findByEmail(email);
+        user.setActivationCode(resetCode);
+        this.userRepository.save(user);
+
+        log.info("User with email '{}' has been activated.", email);
     }
 
     @Override

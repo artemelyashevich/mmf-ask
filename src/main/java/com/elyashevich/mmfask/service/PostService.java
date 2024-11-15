@@ -27,6 +27,40 @@ public interface PostService extends CrudService<Post> {
     Post findByName(final String name);
 
     /**
+<<<<<<< HEAD
+=======
+     * Finds a post by ID.
+     *
+     * @param id the ID of the post to find
+     * @return the found post
+     */
+    Post findById(final String id);
+
+    /**
+     * Creates a new post.
+     *
+     * @param dto the post DTO to create
+     * @return the created post
+     */
+    Post create(final Post dto);
+
+    /**
+     * Updates a post by ID.
+     *
+     * @param id the ID of the post to update
+     * @param dto the updated post DTO
+     * @return the updated post
+     */
+    Post update(final String id, final Post dto);
+
+    /**
+     * Deletes a post by ID.
+     *
+     * @param id the ID of the post to delete
+     */
+    void delete(final String id);
+
+    /**
      * Uploads a file for a specific post.
      *
      * @param id    the ID of the post to upload the file for

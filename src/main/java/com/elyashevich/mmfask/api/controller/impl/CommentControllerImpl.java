@@ -37,13 +37,22 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
+    public CommentResponseDto create(
+            final @Validated @RequestBody CommentRequestDto dto,
+            final @RequestParam("email") String email
+    ) {
+        var comment = this.commentService.create(dto, email);
+        return commentMapper.toResponseDto(comment);
+    }
+
+    @Override
     public void like(final @PathVariable("id") String id, final @RequestParam("email") String email) {
         this.commentService.like(id);
     }
 
     @Override
     public void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
-        this.commentService.undoLike(id);
+        this.commentService.undoDislike(id);
     }
 
     @Override
@@ -54,15 +63,6 @@ public class CommentControllerImpl implements CommentController {
     @Override
     public void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email) {
         this.commentService.undoDislike(id);
-    }
-
-    @Override
-    public CommentResponseDto create(
-            final @Validated @RequestBody CommentRequestDto dto,
-            final @RequestParam("email") String email
-    ) {
-        var comment = this.commentService.create(dto, email);
-        return commentMapper.toResponseDto(comment);
     }
 
     @Override

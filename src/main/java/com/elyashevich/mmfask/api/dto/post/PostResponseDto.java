@@ -23,11 +23,11 @@ public record PostResponseDto(
 
         Long views,
 
+        Set<String> images,
+
         Long likes,
 
         Long dislikes,
-
-        Set<String> images,
 
         LocalDateTime createdAt,
 

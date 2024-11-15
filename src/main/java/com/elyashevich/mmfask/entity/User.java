@@ -23,6 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = "password")
 @EqualsAndHashCode
 public class User {
 
@@ -39,6 +40,8 @@ public class User {
     @DBRef
     private AttachmentImage image;
 
+    private String activationCode;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @CreatedDate
@@ -48,16 +51,4 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("id='").append(id).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", image=").append(image);
-        sb.append(", createdAt=").append(createdAt);
-        sb.append(", updatedAt=").append(updatedAt);
-        sb.append('}');
-        return sb.toString();
-    }
 }

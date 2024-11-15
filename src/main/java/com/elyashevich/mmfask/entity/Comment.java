@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @EqualsAndHashCode
 public class Comment {
 
@@ -41,8 +42,6 @@ public class Comment {
 
     private Long dislikes;
 
-    private int rating;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @CreatedDate
@@ -52,20 +51,4 @@ public class Comment {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Comment{");
-        sb.append("id='").append(id).append('\'');
-        sb.append(", user=").append(user);
-        sb.append(", post=").append(post);
-        sb.append(", body='").append(body).append('\'');
-        sb.append(", likes=").append(likes);
-        sb.append(", dislikes=").append(dislikes);
-        sb.append(", rating=").append(rating);
-        sb.append(", createdAt=").append(createdAt);
-        sb.append(", updatedAt=").append(updatedAt);
-        sb.append('}');
-        return sb.toString();
-    }
 }

@@ -4,7 +4,6 @@ import com.elyashevich.mmfask.api.dto.auth.AuthRequestDto;
 import com.elyashevich.mmfask.api.dto.auth.ResetPasswordDto;
 import com.elyashevich.mmfask.exception.InvalidPasswordException;
 import com.elyashevich.mmfask.exception.InvalidTokenException;
-import com.elyashevich.mmfask.service.ActivationCodeService;
 import com.elyashevich.mmfask.service.AuthService;
 import com.elyashevich.mmfask.service.MailService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
@@ -28,22 +27,24 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserServiceImpl userService;
     private final MailService mailService;
-    private final ActivationCodeService activationCodeService;
-
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
 
     private final static String PATH_TO_RESET_PASSWORD = "reset_password";
     private final static String PATH_TO_ACTIVATE_ACCOUNT = "activate_account";
 
+    @Transactional
     @Override
-    public void activate(final String email) throws MessagingException {
-        log.debug("Attempting to save activation code to user with email '{}'.", email);
-        var activationCode = generateActivationToken();
-        this.activationCodeService.create(activationCode, email);
-        this.mailService.sendMessage(email, activationCode, PATH_TO_ACTIVATE_ACCOUNT);
+    public void register(final AuthRequestDto authRequestDto) throws MessagingException {
+        log.debug("Attempting to register a new user with email '{}'.", authRequestDto.email());
 
-        log.info("Activation code has been created to user with email {}.", email);
+        var candidate = this.userConverter.fromAuthDto(authRequestDto);
+        var activationCode = generateActivationToken();
+        candidate.setActivationCode(activationCode);
+        this.userService.create(candidate);
+        this.mailService.sendMessage(authRequestDto.email(), activationCode, PATH_TO_ACTIVATE_ACCOUNT);
+
+        log.info("User with email '{}' has been registered.", authRequestDto.email());
     }
 
     @Override
@@ -60,17 +61,20 @@ public class AuthServiceImpl implements AuthService {
         return token;
     }
 
-    @Transactional
     @Override
-    public void activateUser(final String email, final String code) {
+    public String activateUser(final String email, final String code) {
         log.debug("Attempting to activate user with email '{}'.", email);
 
-        var activationCode = this.activationCodeService.findByEmail(email);
-        if (!activationCode.getValue().equals(code)) {
+        var user = this.userService.findByEmail(email);
+        if (!user.getActivationCode().equals(code)) {
             throw new InvalidTokenException("Invalid activation code.");
         }
-        activationCode.setConfirmed(true);
-        this.activationCodeService.setConfirmed(activationCode);
+        this.userService.activate(email);
+        var userDetails = this.userService.loadUserByUsername(email);
+        var token = generateToken(userDetails);
+
+        log.info("User with email '{}' has been activated.", email);
+        return token;
     }
 
     @Override
@@ -78,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
         log.debug("Attempting to send reset password code to user with email '{}'", email);
 
         var resetCode = generateActivationToken();
-        this.activationCodeService.update(email, resetCode);
+        this.userService.setActivationCode(email, resetCode);
         this.mailService.sendMessage(email, resetCode, PATH_TO_RESET_PASSWORD);
 
         log.info("Reset password code gas been sent to user with email '{}'.", email);
@@ -99,17 +103,6 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Password of user with email '{}' has been reseted.", email);
         return token;
-    }
-
-    @Transactional
-    @Override
-    public String register(String email, AuthRequestDto dto) {
-        if (!this.activationCodeService.findByEmail(email).isConfirmed()) {
-            throw new InvalidTokenException("Code mismatch.");
-        }
-        var candidate = this.userConverter.fromAuthDto(new AuthRequestDto(email, dto.password()));
-        this.userService.create(candidate);
-        return generateToken(this.userService.loadUserByUsername(email));
     }
 
     private static String generateToken(final UserDetails userDetails) {

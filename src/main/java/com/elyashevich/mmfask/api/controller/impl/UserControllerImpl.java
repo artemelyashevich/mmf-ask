@@ -2,7 +2,9 @@ package com.elyashevich.mmfask.api.controller.impl;
 
 import com.elyashevich.mmfask.api.controller.UserController;
 import com.elyashevich.mmfask.api.dto.user.UserDto;
+import com.elyashevich.mmfask.api.dto.user.UserStatisticsDto;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
+import com.elyashevich.mmfask.service.StatisticService;
 import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ public class UserControllerImpl implements UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final StatisticService statisticService;
 
     @Override
     public List<UserDto> findAll() {
@@ -29,6 +32,11 @@ public class UserControllerImpl implements UserController {
     public UserDto findById(final @PathVariable("id") String id) {
         var user = this.userService.findById(id);
         return this.userMapper.toDto(user);
+    }
+
+    @Override
+    public UserStatisticsDto findStatistics() {
+        return this.statisticService.userStatistic();
     }
 
     @Override

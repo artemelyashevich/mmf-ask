@@ -12,9 +12,9 @@ public record CommentResponseDto(
 
         String body,
 
-        Long like,
+        Long likes,
 
-        Long dislike,
+        Long dislikes,
 
         LocalDateTime createdAt,
 

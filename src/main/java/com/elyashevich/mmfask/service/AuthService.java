@@ -12,9 +12,9 @@ public interface AuthService {
     /**
      * Registers a user with the provided authentication request.
      *
-     * @param email the authentication request containing user email
+     * @param authRequestDto the authentication request DTO containing user information
      */
-    void activate(final String email) throws MessagingException;
+    void register(final AuthRequestDto authRequestDto) throws MessagingException;
 
     /**
      * Logs in a user with the provided authentication request.
@@ -27,9 +27,11 @@ public interface AuthService {
     /**
      * Activates a user with the given email using the provided code.
      *
+     * @param email The email of the user to activate.
      * @param code The activation code.
+     * @return A message indicating the result of the activation process.
      */
-    void activateUser(final String email, final String code);
+    String activateUser(final String email, final String code);
 
     /**
      * Sends a reset password code to the specified email address.
@@ -48,6 +50,4 @@ public interface AuthService {
      * @return A message indicating the result of the password reset process.
      */
     String resetPassword(final String email, final String code, final ResetPasswordDto dto);
-
-    String register(final String email, final AuthRequestDto dto);
 }

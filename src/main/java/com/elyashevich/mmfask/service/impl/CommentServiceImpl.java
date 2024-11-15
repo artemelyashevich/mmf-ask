@@ -47,6 +47,8 @@ public class CommentServiceImpl implements CommentService {
                 .user(user)
                 .post(post)
                 .body(dto.body())
+                .likes(0L)
+                .dislikes(0L)
                 .build();
         var savedComment = this.commentRepository.save(comment);
 
@@ -82,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment.getLikes() == 0) {
             throw new RuntimeException("");
         }
-        comment.setDislikes(comment.getLikes() - 1);
+        comment.setLikes(comment.getLikes() - 1);
         this.commentRepository.save(comment);
     }
 

@@ -2,8 +2,10 @@ package com.elyashevich.mmfask.api.controller.impl;
 
 import com.elyashevich.mmfask.api.controller.CategoryController;
 import com.elyashevich.mmfask.api.dto.category.CategoryDto;
+import com.elyashevich.mmfask.api.dto.category.CategoryStatisticsDto;
 import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.service.CategoryService;
+import com.elyashevich.mmfask.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryControllerImpl implements CategoryController {
 
+    private final StatisticService statisticService;
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
@@ -44,6 +47,11 @@ public class CategoryControllerImpl implements CategoryController {
     ) {
         var category = this.categoryService.update(id, this.categoryMapper.toEntity(categoryDto));
         return this.categoryMapper.toDto(category);
+    }
+
+    @Override
+    public CategoryStatisticsDto findStatistics() {
+        return this.statisticService.categoryStatistics();
     }
 
     @Override
