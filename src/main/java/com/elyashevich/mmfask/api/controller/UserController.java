@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,6 +41,15 @@ public interface UserController {
     )
     @GetMapping
     List<UserDto> findAll();
+
+    @Operation(summary = "Find current user", description = "Get user from jwt claims")
+    @ApiResponse(
+        responseCode = "200",
+        description = "User found",
+        content = @Content(schema = @Schema(implementation = UserDto.class))
+    )
+    @GetMapping ("/current")
+    UserDto findCurrent();
 
     /**
      * Find user by ID.
@@ -85,4 +96,8 @@ public interface UserController {
             final @PathVariable("email") String email,
             final @RequestParam("file") MultipartFile file
     ) throws Exception;
+
+    @PutMapping
+    @PreAuthorize("#email == authentication.principal")
+    UserDto updateUser(final @RequestParam("email") String email, @RequestBody UserDto userDto);
 }

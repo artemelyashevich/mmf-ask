@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -51,6 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (this.categoryRepository.existsByName(name)) {
             throw new ResourceAlreadyExistsException("Category with name = %s already exists.".formatted(name));
         }
+        dto.setPosts(new ArrayList<>());
         var category = this.categoryRepository.save(dto);
 
         log.info("Category with name '{}' has been created.", dto.getName());

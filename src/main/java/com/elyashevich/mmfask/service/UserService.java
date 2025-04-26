@@ -93,4 +93,6 @@ public interface UserService {
      * @param resetCode The reset code to be set.
      */
     void setActivationCode(final String email, final String resetCode);
+
+    User update(final String email, final User entity);
 }

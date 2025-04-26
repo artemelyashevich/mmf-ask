@@ -7,7 +7,9 @@ import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.service.StatisticService;
 import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,13 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
+    public UserDto findCurrent() {
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user = this.userService.findByEmail(email);
+        return this.userMapper.toDto(user);
+    }
+
+    @Override
     public UserDto findById(final @PathVariable("id") String id) {
         var user = this.userService.findById(id);
         return this.userMapper.toDto(user);
@@ -45,6 +54,12 @@ public class UserControllerImpl implements UserController {
             final @RequestParam("file") MultipartFile file
     ) throws Exception {
         var user = this.userService.uploadImage(email, file);
+        return this.userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDto updateUser(final @RequestParam("email") String email, @RequestBody UserDto userDto) {
+        var user = this.userService.update(email, this.userMapper.toEntity(userDto));
         return this.userMapper.toDto(user);
     }
 }

@@ -12,6 +12,7 @@ import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
     private final AttachmentService attachmentService;
+    private final ObjectFactory<UserServiceImpl> objectFactory;
 
     @Override
     public List<User> findAll() {
@@ -165,6 +167,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.userRepository.save(user);
 
         log.info("User with email '{}' has been activated.", email);
+    }
+
+    @Override
+    @Transactional
+    public User update(final String email, final User entity) {
+        log.debug("Attempting update user with email '{}'.", email);
+
+        var user = this.objectFactory.getObject().findByEmail(email);
+
+        if (entity.getEmail() != null) {
+            if (this.userRepository.existsByEmail(email)) {
+                throw new ResourceAlreadyExistsException("User with email = %s already exists".formatted(email));
+            }
+            user.setEmail(entity.getEmail());
+        }
+
+        var updatedUser = this.userRepository.save(user);
+
+        log.info("User with email '{}' has been updated.", email);
+        return updatedUser;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.elyashevich.mmfask.api.dto.user.UserStatisticsDto;
 import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.api.mapper.PostMapper;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
+import com.elyashevich.mmfask.entity.Category;
 import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.repository.CategoryRepository;
 import com.elyashevich.mmfask.repository.PostRepository;
@@ -14,6 +15,10 @@ import com.elyashevich.mmfask.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +57,10 @@ public class StatisticServiceImpl implements StatisticService {
     public CategoryStatisticsDto categoryStatistics() {
         var categories = this.categoryRepository.findAll();
         var countOfCategories = (long) categories.size();
-        return new CategoryStatisticsDto(countOfCategories, this.categoryMapper.toDto(categories));
+        var mostPopular = categories.stream()
+                .sorted(Comparator.comparingInt(category -> Optional.of(category.getPosts().size()).orElse(0)))
+                .limit(5)
+                .collect(Collectors.toMap(Category::getName, category -> (long) category.getPosts().size()));
+        return new CategoryStatisticsDto(countOfCategories, this.categoryMapper.toDto(categories), mostPopular);
     }
 }

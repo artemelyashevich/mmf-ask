@@ -1,5 +1,8 @@
 package com.elyashevich.mmfask.security;
 
+import com.elyashevich.mmfask.exception.InvalidTokenException;
+import com.elyashevich.mmfask.util.JsonMessageProviderUtil;
+import com.elyashevich.mmfask.util.SafetyExtractEmailUtil;
 import com.elyashevich.mmfask.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,12 +23,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
     public static final String BEARER_PREFIX = "Bearer ";
-    public static final String HEADER_NAME = "Authorization";
+    public static final Integer TOKEN_PREFIX_LENGTH = 7;
+    private static final String AUTH_ERROR_MESSAGE = "Authentication error: {}";
 
     @Override
     protected void doFilterInternal(
@@ -30,24 +38,46 @@ public class SecurityFilter extends OncePerRequestFilter {
             @NonNull final HttpServletResponse response,
             @NonNull final FilterChain filterChain
     ) throws ServletException, IOException {
-        var authHeader = request.getHeader(HEADER_NAME);
-        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        var jwt = authHeader.substring(BEARER_PREFIX.length());
-        var email = TokenUtil.extractEmailClaims(jwt);
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        try {
+            var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+            if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            var jwt = authHeader.substring(TOKEN_PREFIX_LENGTH);
+            var email = SafetyExtractEmailUtil.extractEmailClaims(jwt);
+
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                var context = SecurityContextHolder.createEmptyContext();
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     email,
                     null,
-                    TokenUtil.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).toList()
-            );
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            context.setAuthentication(authToken);
-            SecurityContextHolder.setContext(context);
+                    TokenUtil.getRoles(jwt).stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList()
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                context.setAuthentication(authToken);
+                SecurityContextHolder.setContext(context);
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (InvalidTokenException e) {
+            log.warn(AUTH_ERROR_MESSAGE, e.getMessage());
+            handleAuthenticationError(response, e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected authentication error", e);
+            handleAuthenticationError(response, "Internal authentication error");
         }
-        filterChain.doFilter(request, response);
+    }
+
+    private void handleAuthenticationError(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(JsonMessageProviderUtil.provide(message));
+        response.getWriter().flush();
     }
 }
