@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,7 +98,27 @@ public interface UserController {
             final @RequestParam("file") MultipartFile file
     ) throws Exception;
 
+    @Operation(
+        summary = "Update user email",
+        description = "Update user email"
+    )
+    @ApiResponse(
+        responseCode = "201",
+        description = "User updated successfully",
+        content = @Content(schema = @Schema(implementation = UserDto.class))
+    )
     @PutMapping
-    @PreAuthorize("#email == authentication.principal")
-    UserDto updateUser(final @RequestParam("email") String email, @RequestBody UserDto userDto);
+    UserDto updateUser(@RequestBody UserDto userDto) throws MessagingException;
+
+    @Operation(
+        summary = "Update user email",
+        description = "Update user email"
+    )
+    @ApiResponse(
+        responseCode = "201",
+        description = "User updated successfully",
+        content = @Content(schema = @Schema(implementation = UserDto.class))
+    )
+    @PutMapping("/{code}")
+    UserDto updateEmailUser(@PathVariable("code") String code, @RequestBody UserDto userDto) throws MessagingException;
 }

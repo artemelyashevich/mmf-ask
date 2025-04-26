@@ -1,5 +1,6 @@
 package com.elyashevich.mmfask.service.impl;
 
+import com.elyashevich.mmfask.api.dto.user.UserDto;
 import com.elyashevich.mmfask.entity.Role;
 import com.elyashevich.mmfask.entity.User;
 import com.elyashevich.mmfask.exception.InvalidPasswordException;
@@ -8,8 +9,10 @@ import com.elyashevich.mmfask.exception.ResourceAlreadyExistsException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.UserRepository;
 import com.elyashevich.mmfask.service.AttachmentService;
+import com.elyashevich.mmfask.service.MailService;
 import com.elyashevich.mmfask.service.UserService;
 import com.elyashevich.mmfask.service.converter.impl.UserConverter;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectFactory;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 @Slf4j
@@ -30,11 +34,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
+    private final static String PATH_TO_ACTIVATE_ACCOUNT = "activate_account";
+
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
     private final AttachmentService attachmentService;
     private final ObjectFactory<UserServiceImpl> objectFactory;
+    private final MailService mailService;
 
     @Override
     public List<User> findAll() {
@@ -171,22 +178,37 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public User update(final String email, final User entity) {
+    public User update(final String email, final User entity) throws MessagingException {
         log.debug("Attempting update user with email '{}'.", email);
 
         var user = this.objectFactory.getObject().findByEmail(email);
 
         if (entity.getEmail() != null) {
-            if (this.userRepository.existsByEmail(email)) {
-                throw new ResourceAlreadyExistsException("User with email = %s already exists".formatted(email));
+            if (this.userRepository.existsByEmail(entity.getEmail())) {
+                throw new ResourceAlreadyExistsException("User with email = %s already exists".formatted(entity.getEmail()));
             }
-            user.setEmail(entity.getEmail());
+            var code = generateActivationToken();
+            this.mailService.sendMessage(entity.getEmail(), code, PATH_TO_ACTIVATE_ACCOUNT);
+            user.setActivationCode(code);
         }
 
         var updatedUser = this.userRepository.save(user);
 
         log.info("User with email '{}' has been updated.", email);
         return updatedUser;
+    }
+
+    @Override
+    @Transactional
+    public User updateEmail(final String email, final UserDto userDto, final String code) {
+        var user = this.objectFactory.getObject().findByEmail(email);
+        if (!user.getActivationCode().equals(code)) {
+            throw new InvalidTokenException("Invalid activation code.");
+        }
+        user.setEmail(userDto.email());
+        var updated = this.userRepository.save(user);
+        log.info("User with email '{}' has been updated.", email);
+        return updated;
     }
 
     @Override
@@ -199,5 +221,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         .map(role -> new SimpleGrantedAuthority(role.name()))
                         .toList()
         );
+    }
+
+    private static String generateActivationToken() {
+        var characters = "0123456789";
+        var tokenBuilder = new StringBuilder();
+        var random = new Random();
+        for (int i = 0; i < 6; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            tokenBuilder.append(characters.charAt(randomIndex));
+        }
+        return tokenBuilder.toString();
     }
 }

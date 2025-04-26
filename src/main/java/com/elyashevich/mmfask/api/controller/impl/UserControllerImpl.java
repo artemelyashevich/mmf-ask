@@ -6,8 +6,10 @@ import com.elyashevich.mmfask.api.dto.user.UserStatisticsDto;
 import com.elyashevich.mmfask.api.mapper.UserMapper;
 import com.elyashevich.mmfask.service.StatisticService;
 import com.elyashevich.mmfask.service.UserService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,8 +60,16 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public UserDto updateUser(final @RequestParam("email") String email, @RequestBody UserDto userDto) {
+    public UserDto updateUser(@RequestBody UserDto userDto) throws MessagingException {
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
         var user = this.userService.update(email, this.userMapper.toEntity(userDto));
         return this.userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDto updateEmailUser(String code, UserDto userDto) throws MessagingException {
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user = this.userService.updateEmail(email, userDto, code);
+        return userMapper.toDto(user);
     }
 }

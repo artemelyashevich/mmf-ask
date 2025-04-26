@@ -1,6 +1,8 @@
 package com.elyashevich.mmfask.service;
 
+import com.elyashevich.mmfask.api.dto.user.UserDto;
 import com.elyashevich.mmfask.entity.User;
+import jakarta.mail.MessagingException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -94,5 +96,7 @@ public interface UserService {
      */
     void setActivationCode(final String email, final String resetCode);
 
-    User update(final String email, final User entity);
+    User update(final String email, final User entity) throws MessagingException;
+
+    User updateEmail(final String email, final UserDto userDto, final String code);
 }
