@@ -70,6 +70,15 @@ public interface UserController {
     @GetMapping("/{id}")
     UserDto findById(final @PathVariable("id") String id);
 
+    @Operation(
+            summary = "Find user statistics",
+            description = "Get user statistics"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "User statistics found",
+            content = @Content(schema = @Schema(implementation = UserStatisticsDto.class))
+    )
     @GetMapping("/statistics")
     UserStatisticsDto findStatistics();
 
