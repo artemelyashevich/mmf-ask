@@ -49,7 +49,7 @@ public interface UserController {
         description = "User found",
         content = @Content(schema = @Schema(implementation = UserDto.class))
     )
-    @GetMapping ("/current")
+    @GetMapping ("/find/current")
     UserDto findCurrent();
 
     /**
