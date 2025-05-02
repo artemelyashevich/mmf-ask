@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -32,6 +33,9 @@ public class ProgrammingLanguage {
     @Indexed(unique = true)
     private String name;
 
+    @Indexed
+    private String description;
+
     @DBRef
     private List<Post> posts;
 
@@ -44,6 +48,10 @@ public class ProgrammingLanguage {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public Integer getNumberOfPosts() {
+        return this.posts == null ? 0 : this.posts.size();
+    }
 
     @Override
     public String toString() {

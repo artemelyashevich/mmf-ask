@@ -12,7 +12,7 @@ public class ProgrammingLanguageMapperImpl implements ProgrammingLanguageMapper 
 
     @Override
     public ProgrammingLanguageDto toDto(final ProgrammingLanguage entity) {
-        return new ProgrammingLanguageDto(entity.getId(), entity.getName());
+        return new ProgrammingLanguageDto(entity.getId(), entity.getName(), entity.getDescription(), entity.getNumberOfPosts());
     }
 
     @Override
@@ -26,6 +26,7 @@ public class ProgrammingLanguageMapperImpl implements ProgrammingLanguageMapper 
     public ProgrammingLanguage toEntity(final ProgrammingLanguageDto dto) {
         return ProgrammingLanguage.builder()
                 .name(dto.name())
+                .description(dto.description())
                 .build();
     }
 
