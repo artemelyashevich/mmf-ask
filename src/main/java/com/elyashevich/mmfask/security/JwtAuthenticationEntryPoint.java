@@ -15,9 +15,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(
-        final HttpServletRequest request,
-        final HttpServletResponse response,
-        final AuthenticationException authException
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final AuthenticationException authException
     ) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");

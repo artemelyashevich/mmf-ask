@@ -52,17 +52,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post findByName(final String name) {
         return this.postRepository.findByTitle(name)
-            .orElseThrow(
-                () -> new ResourceNotFoundException("Post with name = %s was not found.".formatted(name))
-            );
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Post with name = %s was not found.".formatted(name))
+                );
     }
 
     @Override
     public Post findById(final String id) {
         return this.postRepository.findById(id)
-            .orElseThrow(
-                () -> new ResourceNotFoundException("Post with id = %s was not found.".formatted(id))
-            );
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Post with id = %s was not found.".formatted(id))
+                );
     }
 
     @Transactional
@@ -137,8 +137,8 @@ public class PostServiceImpl implements PostService {
 
         var post = this.findById(id);
         var images = post.getAttachmentImages() != null
-            ? post.getAttachmentImages()
-            : new HashSet<AttachmentImage>();
+                ? post.getAttachmentImages()
+                : new HashSet<AttachmentImage>();
         Arrays.stream(files).forEach(file -> {
             try {
                 images.add(this.attachmentService.create(file));
@@ -168,8 +168,8 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Post setDataToDto(final Post dto) {
         var categories = dto.getCategories().stream()
-            .map(category -> this.categoryService.findByName(category.getName()))
-            .collect(Collectors.toSet());
+                .map(category -> this.categoryService.findByName(category.getName()))
+                .collect(Collectors.toSet());
         var programmingLanguage = this.programmingLanguageService.findByName(dto.getProgrammingLanguage().getName());
         var user = this.userService.findByEmail(dto.getCreator().getEmail());
         dto.setCategories(categories);

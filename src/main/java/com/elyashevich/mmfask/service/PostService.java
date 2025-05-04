@@ -27,8 +27,8 @@ public interface PostService extends CrudService<Post> {
     Post findByName(final String name);
 
     /**
-<<<<<<< HEAD
-=======
+     * <<<<<<< HEAD
+     * =======
      * Finds a post by ID.
      *
      * @param id the ID of the post to find
@@ -47,7 +47,7 @@ public interface PostService extends CrudService<Post> {
     /**
      * Updates a post by ID.
      *
-     * @param id the ID of the post to update
+     * @param id  the ID of the post to update
      * @param dto the updated post DTO
      * @return the updated post
      */

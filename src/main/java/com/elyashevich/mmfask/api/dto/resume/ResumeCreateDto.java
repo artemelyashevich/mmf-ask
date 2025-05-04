@@ -1,13 +1,9 @@
 package com.elyashevich.mmfask.api.dto.resume;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
-import java.util.Set;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
 import java.util.Set;
 
 @Schema(

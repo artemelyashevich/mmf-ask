@@ -2,10 +2,9 @@ package com.elyashevich.mmfask.api.dto.resume;
 
 import com.elyashevich.mmfask.entity.Category;
 import com.elyashevich.mmfask.entity.ProgrammingLanguage;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Set;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(
         name = "ResumeResponseDto",

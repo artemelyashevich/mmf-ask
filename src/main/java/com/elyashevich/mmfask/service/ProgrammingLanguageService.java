@@ -43,7 +43,7 @@ public interface ProgrammingLanguageService {
     /**
      * Updates a programming language by ID.
      *
-     * @param id the ID of the programming language to update
+     * @param id  the ID of the programming language to update
      * @param dto the updated programming language DTO
      * @return the updated programming language
      */

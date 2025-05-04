@@ -26,7 +26,7 @@ public class CommandLineRunnerConfig {
     @Bean
     public CommandLineRunner commandLineRunnerBean() {
         return args -> {
-            if (!this.userRepository.existsByEmail(adminEmail)){
+            if (!this.userRepository.existsByEmail(adminEmail)) {
                 var admin = User.builder()
                         .email(this.adminEmail)
                         .password(this.adminPassword)

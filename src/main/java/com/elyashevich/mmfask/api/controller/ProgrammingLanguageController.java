@@ -83,7 +83,7 @@ public interface ProgrammingLanguageController {
     /**
      * Update a programming language.
      *
-     * @param id The ID of the programming language to update.
+     * @param id                     The ID of the programming language to update.
      * @param programmingLanguageDto The updated programming language data.
      * @return ProgrammingLanguageDto object representing the updated programming language.
      */

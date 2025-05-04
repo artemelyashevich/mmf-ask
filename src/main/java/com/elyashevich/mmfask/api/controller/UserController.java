@@ -45,11 +45,11 @@ public interface UserController {
 
     @Operation(summary = "Find current user", description = "Get user from jwt claims")
     @ApiResponse(
-        responseCode = "200",
-        description = "User found",
-        content = @Content(schema = @Schema(implementation = UserDto.class))
+            responseCode = "200",
+            description = "User found",
+            content = @Content(schema = @Schema(implementation = UserDto.class))
     )
-    @GetMapping ("/find/current")
+    @GetMapping("/find/current")
     UserDto findCurrent();
 
     /**
@@ -86,7 +86,7 @@ public interface UserController {
      * Upload user image.
      *
      * @param email The email of the user to upload the image for.
-     * @param file The image file to upload.
+     * @param file  The image file to upload.
      * @return UserDto object representing the user with the uploaded image.
      * @throws Exception if an error occurs during the image upload process.
      */
@@ -108,25 +108,25 @@ public interface UserController {
     ) throws Exception;
 
     @Operation(
-        summary = "Update user email",
-        description = "Update user email"
+            summary = "Update user email",
+            description = "Update user email"
     )
     @ApiResponse(
-        responseCode = "201",
-        description = "User updated successfully",
-        content = @Content(schema = @Schema(implementation = UserDto.class))
+            responseCode = "201",
+            description = "User updated successfully",
+            content = @Content(schema = @Schema(implementation = UserDto.class))
     )
     @PutMapping
     UserDto updateUser(@RequestBody UserDto userDto) throws MessagingException;
 
     @Operation(
-        summary = "Update user email",
-        description = "Update user email"
+            summary = "Update user email",
+            description = "Update user email"
     )
     @ApiResponse(
-        responseCode = "201",
-        description = "User updated successfully",
-        content = @Content(schema = @Schema(implementation = UserDto.class))
+            responseCode = "201",
+            description = "User updated successfully",
+            content = @Content(schema = @Schema(implementation = UserDto.class))
     )
     @PutMapping("/{code}")
     UserDto updateEmailUser(@PathVariable("code") String code, @RequestBody UserDto userDto) throws MessagingException;

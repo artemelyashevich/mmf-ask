@@ -11,7 +11,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.security.Principal;
 
@@ -63,7 +68,7 @@ public interface AuthController {
      * Activate a user account with email verification code.
      *
      * @param email The email of the user to activate.
-     * @param code The verification code for activation.
+     * @param code  The verification code for activation.
      * @return AuthResponseDto object representing the activated user.
      */
     @Operation(
@@ -100,8 +105,8 @@ public interface AuthController {
     /**
      * Reset a user's password using the provided reset code.
      *
-     * @param code The reset code for password reset.
-     * @param dto The ResetPasswordDto containing the new password.
+     * @param code      The reset code for password reset.
+     * @param dto       The ResetPasswordDto containing the new password.
      * @param principal The principal user requesting the password reset.
      * @return AuthResponseDto object representing the reset password action.
      */

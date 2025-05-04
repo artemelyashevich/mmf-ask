@@ -2,7 +2,6 @@ package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.entity.Category;
 import com.elyashevich.mmfask.service.contract.CrudService;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

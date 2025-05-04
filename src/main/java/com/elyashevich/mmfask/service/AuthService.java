@@ -28,7 +28,7 @@ public interface AuthService {
      * Activates a user with the given email using the provided code.
      *
      * @param email The email of the user to activate.
-     * @param code The activation code.
+     * @param code  The activation code.
      * @return A message indicating the result of the activation process.
      */
     String activateUser(final String email, final String code);
@@ -45,8 +45,8 @@ public interface AuthService {
      * Resets the password for a user with the provided email, code, and new password details.
      *
      * @param email The email of the user for password reset.
-     * @param code The reset password code.
-     * @param dto The data for resetting the password.
+     * @param code  The reset password code.
+     * @param dto   The data for resetting the password.
      * @return A message indicating the result of the password reset process.
      */
     String resetPassword(final String email, final String code, final ResetPasswordDto dto);

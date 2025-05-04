@@ -2,7 +2,6 @@ package com.elyashevich.mmfask.api.controller;
 
 import com.elyashevich.mmfask.api.dto.comment.CommentRequestDto;
 import com.elyashevich.mmfask.api.dto.comment.CommentResponseDto;
-import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

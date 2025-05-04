@@ -1,6 +1,5 @@
 package com.elyashevich.mmfask.api.mapper.impl;
 
-import com.elyashevich.mmfask.api.dto.comment.CommentRequestDto;
 import com.elyashevich.mmfask.api.dto.comment.CommentResponseDto;
 import com.elyashevich.mmfask.api.mapper.CommentMapper;
 import com.elyashevich.mmfask.entity.Comment;

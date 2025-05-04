@@ -17,16 +17,16 @@ public class SafetyExtractEmailUtil {
             return TokenUtil.extractEmailClaims(jwt);
         } catch (ExpiredJwtException e) {
             throw new InvalidTokenException("JWT expired at " + e.getClaims().getExpiration() +
-                ". Current time: " + new Date());
+                    ". Current time: " + new Date());
         } catch (SignatureException e) {
             throw new InvalidTokenException("JWT signature does not match locally computed signature. " +
-                "JWT validity cannot be asserted and should not be trusted.");
+                    "JWT validity cannot be asserted and should not be trusted.");
         } catch (MalformedJwtException e) {
             throw new InvalidTokenException("Malformed JWT: " + e.getMessage() +
-                ". JWT must consist of three base64-encoded parts separated by dots");
+                    ". JWT must consist of three base64-encoded parts separated by dots");
         } catch (UnsupportedJwtException e) {
             throw new InvalidTokenException("Unsupported JWT: " + e.getMessage() +
-                ". Expected format: header.payload.signature");
+                    ". Expected format: header.payload.signature");
         } catch (IllegalArgumentException e) {
             throw new InvalidTokenException("JWT claims string is empty or invalid: " + e.getMessage());
         }

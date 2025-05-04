@@ -27,7 +27,7 @@ public interface FavoritesService {
     /**
      * Creates a new favorite for a user with a given post ID.
      *
-     * @param email The email of the user.
+     * @param email  The email of the user.
      * @param postId The ID of the post to be added as a favorite.
      * @return The created Favorites object.
      */
@@ -36,7 +36,7 @@ public interface FavoritesService {
     /**
      * Removes a post from the favorites of a user.
      *
-     * @param email The email of the user.
+     * @param email  The email of the user.
      * @param postId The ID of the post to be removed.
      * @return The updated Favorites object after removing the post.
      */

@@ -2,7 +2,6 @@ package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.api.dto.comment.CommentRequestDto;
 import com.elyashevich.mmfask.entity.Comment;
-import com.elyashevich.mmfask.service.contract.CrudService;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public interface CommentService {
     /**
      * Creates a new comment using the provided data and user email.
      *
-     * @param dto The data for creating the comment.
+     * @param dto   The data for creating the comment.
      * @param email The email of the user creating the comment.
      * @return The created Comment object.
      */
@@ -40,7 +39,7 @@ public interface CommentService {
     /**
      * Updates a comment with the provided data.
      *
-     * @param id The ID of the comment to update.
+     * @param id  The ID of the comment to update.
      * @param dto The updated data for the comment.
      * @return The updated Comment object.
      */

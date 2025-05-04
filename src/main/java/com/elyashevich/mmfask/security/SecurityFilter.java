@@ -15,7 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -53,11 +52,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 
                 var context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    email,
-                    null,
-                    TokenUtil.getRoles(jwt).stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .toList()
+                        email,
+                        null,
+                        TokenUtil.getRoles(jwt).stream()
+                                .map(SimpleGrantedAuthority::new)
+                                .toList()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 context.setAuthentication(authToken);

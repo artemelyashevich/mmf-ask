@@ -70,8 +70,8 @@ public interface UserService {
     /**
      * Uploads an image for a specific user.
      *
-     * @param email   the email of the user to upload the image for
-     * @param file the multipart file representing the image to upload
+     * @param email the email of the user to upload the image for
+     * @param file  the multipart file representing the image to upload
      * @return the user with the uploaded image
      * @throws Exception if an error occurs during image upload
      */

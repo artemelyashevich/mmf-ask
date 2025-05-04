@@ -8,8 +8,6 @@ import com.elyashevich.mmfask.service.ProgrammingLanguageService;
 import com.elyashevich.mmfask.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.Transient;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

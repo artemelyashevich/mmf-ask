@@ -84,7 +84,7 @@ public interface CategoryController {
     /**
      * Update an existing category by its ID.
      *
-     * @param id The ID of the category to update.
+     * @param id          The ID of the category to update.
      * @param categoryDto The updated CategoryDto data.
      * @return CategoryDto object representing the updated category.
      */

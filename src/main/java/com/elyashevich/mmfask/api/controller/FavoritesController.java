@@ -65,7 +65,7 @@ public interface FavoritesController {
      * Add a post to favorites.
      *
      * @param postId The ID of the post to add to favorites.
-     * @param email The email of the user adding the post to favorites.
+     * @param email  The email of the user adding the post to favorites.
      * @return FavoritesDto object representing the updated favorites.
      */
     @Operation(
@@ -89,7 +89,7 @@ public interface FavoritesController {
      * Remove a post from favorites.
      *
      * @param postId The ID of the post to remove from favorites.
-     * @param email The email of the user removing the post from favorites.
+     * @param email  The email of the user removing the post from favorites.
      * @return FavoritesDto object representing the updated favorites after removal.
      */
     @Operation(
