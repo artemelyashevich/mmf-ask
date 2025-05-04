@@ -25,7 +25,9 @@ public class ResumeMapper {
     }
 
     public List<ResumeResponseDto> toDto(List<Resume> entities) {
-        return List.of();
+        return entities.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     public Resume toEntity(ResumeCreateDto dto) {

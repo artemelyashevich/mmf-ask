@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-
 public class FavoritesControllerImpl implements FavoritesController {
 
     private final FavoritesService favoritesService;
