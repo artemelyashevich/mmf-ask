@@ -14,7 +14,7 @@ public class CommentMapperImpl implements CommentMapper {
     public CommentResponseDto toResponseDto(final Comment comment) {
         return new CommentResponseDto(
                 comment.getId(),
-                comment.getUser().getId(),
+                comment.getUser(),
                 comment.getPost().getId(),
                 comment.getBody(),
                 comment.getLikes(),

@@ -1,6 +1,7 @@
 package com.elyashevich.mmfask.repository;
 
 import com.elyashevich.mmfask.entity.Post;
+import com.elyashevich.mmfask.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -13,4 +14,6 @@ public interface PostRepository extends MongoRepository<Post, String> {
     List<Post> findBy(final String query);
 
     Optional<Post> findByTitle(final String title);
+
+    List<Post> findByCreator(User byEmail);
 }

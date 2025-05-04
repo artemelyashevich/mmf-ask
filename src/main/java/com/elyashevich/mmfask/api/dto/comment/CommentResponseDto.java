@@ -1,5 +1,6 @@
 package com.elyashevich.mmfask.api.dto.comment;
 
+import com.elyashevich.mmfask.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -17,12 +18,7 @@ public record CommentResponseDto(
         )
         String id,
 
-        @Schema(
-                description = "ID of the user who created the comment",
-                example = "6587a8e6a3f12b3c4d5e6f7a",
-                requiredMode = Schema.RequiredMode.REQUIRED
-        )
-        String userId,
+        User creator,
 
         @Schema(
                 description = "ID of the post this comment belongs to",

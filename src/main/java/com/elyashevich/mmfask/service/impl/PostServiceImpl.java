@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -128,6 +129,11 @@ public class PostServiceImpl implements PostService {
         post.setDislikes(post.getDislikes() - 1);
         this.postRepository.save(post);
 
+    }
+
+    @Override
+    public List<Post> findAllByUserEmail(String userEmail) {
+        return this.postRepository.findByCreator(this.userService.findByEmail(userEmail));
     }
 
     @Transactional

@@ -39,14 +39,6 @@ public class Resume {
     @DBRef
     private Integer level = 0;
 
-    public void addCategory(Category category) {
-        categories.add(category);
-    }
-
-    public void addProgrammingLanguage(ProgrammingLanguage programmingLanguage) {
-        programmingLanguages.add(programmingLanguage);
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Resume{");

@@ -1,13 +1,16 @@
 package com.elyashevich.mmfask.service.impl;
 
+import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.entity.Resume;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.ResumeRepository;
 import com.elyashevich.mmfask.service.CategoryService;
+import com.elyashevich.mmfask.service.PostService;
 import com.elyashevich.mmfask.service.ProgrammingLanguageService;
 import com.elyashevich.mmfask.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ public class ResumeServiceImpl implements ResumeService {
     private final ResumeRepository resumeRepository;
     private final CategoryService categoryService;
     private final ProgrammingLanguageService programmingLanguageService;
+    private final PostService postService;
 
     @Override
     public Resume findById(String id) {
@@ -49,7 +53,12 @@ public class ResumeServiceImpl implements ResumeService {
         var programingLanguages = entity.getProgrammingLanguages().stream()
                 .map(it -> this.programmingLanguageService.findById(it.getId()))
                 .collect(Collectors.toSet());
-
+        var level = (Long)this.postService.findAllByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                .stream()
+                .map(Post::getViews)
+                .reduce(Long::sum)
+                .orElse(0L) % 10;
+        entity.setLevel(Integer.valueOf(Long.toString(level)));
         entity.setCategories(categories);
         entity.setProgrammingLanguages(programingLanguages);
 

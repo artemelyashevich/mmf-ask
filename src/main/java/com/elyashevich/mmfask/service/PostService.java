@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Service interface for managing posts.
  */
@@ -77,4 +79,6 @@ public interface PostService extends CrudService<Post> {
     void dislike(final String id);
 
     void undoDislike(final String id);
+
+    List<Post> findAllByUserEmail(String userEmail);
 }
