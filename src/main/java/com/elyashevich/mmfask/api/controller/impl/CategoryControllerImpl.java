@@ -7,6 +7,7 @@ import com.elyashevich.mmfask.api.mapper.CategoryMapper;
 import com.elyashevich.mmfask.service.CategoryService;
 import com.elyashevich.mmfask.service.StatisticService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +24,9 @@ public class CategoryControllerImpl implements CategoryController {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDto> findAll() {
-        var categories = this.categoryService.findAll();
-        return this.categoryMapper.toDto(categories);
+    public Page<CategoryDto> findAll(String query, Integer page, Integer size, String sortDirection, String sortField)  {
+        var categories = this.categoryService.findAll(query, page, size,sortDirection, sortField);
+        return categories.map(this.categoryMapper::toDto);
     }
 
     @Override

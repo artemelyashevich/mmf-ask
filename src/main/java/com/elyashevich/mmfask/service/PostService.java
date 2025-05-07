@@ -18,7 +18,7 @@ public interface PostService extends CrudService<Post> {
      *
      * @return a list of all posts
      */
-    Page<Post> findAll(final String query, final Pageable page);
+    Page<Post> findAll(String query, Integer page, Integer size, String sortDirection, String sortField);
 
     /**
      * Finds a post by name.

@@ -8,6 +8,7 @@ import com.elyashevich.mmfask.service.StatisticService;
 import com.elyashevich.mmfask.service.UserService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +27,9 @@ public class UserControllerImpl implements UserController {
     private final StatisticService statisticService;
 
     @Override
-    public List<UserDto> findAll() {
-        var users = this.userService.findAll();
-        return this.userMapper.toDto(users);
+    public Page<UserDto> findAll(String query, Integer page, Integer size, String sortDirection, String sortField) {
+        var users = this.userService.findAll(query, page, size, sortDirection, sortField);
+        return users.map(this.userMapper::toDto);
     }
 
     @Override

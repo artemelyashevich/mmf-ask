@@ -3,6 +3,7 @@ package com.elyashevich.mmfask.service;
 import com.elyashevich.mmfask.api.dto.user.UserDto;
 import com.elyashevich.mmfask.entity.User;
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface UserService {
      *
      * @return a list of all users
      */
-    List<User> findAll();
+    Page<User> findAll(String query, Integer page, Integer size, String sortDirection, String sortField);
 
     /**
      * Finds a user by ID.

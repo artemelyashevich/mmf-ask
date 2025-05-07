@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
@@ -42,7 +44,13 @@ public interface CategoryController {
             content = @Content(schema = @Schema(implementation = CategoryDto.class))
     )
     @GetMapping
-    List<CategoryDto> findAll();
+    Page<CategoryDto> findAll(
+            @RequestParam(name = "q", required = false, defaultValue = "") String searchValue,
+            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+            @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,
+            @RequestParam(name = "sortField", required = false, defaultValue = "createdAt") String sortField
+    );
 
     /**
      * Find a category by its ID.

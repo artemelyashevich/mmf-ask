@@ -28,12 +28,8 @@ public class PostControllerImpl implements PostController {
     private final PostMapper postMapper;
 
     @Override
-    public Page<PostResponseDto> findAll(
-            final @RequestParam(value = "q", required = false, defaultValue = "") String query,
-            final @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            final @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
-    ) {
-        return this.postService.findAll(query, Pageable.ofSize(size).withPage(page)).map(this.postMapper::toDto);
+    public Page<PostResponseDto> findAll(String query, Integer page, Integer size, String sortDirection, String sortField)  {
+        return this.postService.findAll(query, page, size,sortDirection, sortField).map(this.postMapper::toDto);
     }
 
     @Override

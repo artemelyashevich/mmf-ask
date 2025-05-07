@@ -16,6 +16,9 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,8 +47,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final MailService mailService;
 
     @Override
-    public List<User> findAll() {
-        return this.userRepository.findAll();
+    public Page<User> findAll(String query, Integer page, Integer size, String sortDirection, String sortField) {
+        var pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.fromString(sortDirection),sortField));
+        return this.userRepository.findByEmailContainingIgnoreCase(query, pageable);
     }
 
     @Override

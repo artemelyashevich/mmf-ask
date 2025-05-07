@@ -14,7 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,16 +39,11 @@ public class PostServiceImpl implements PostService {
     private final AttachmentService attachmentService;
 
     @Override
-    public Page<Post> findAll(final String query, final Pageable page) {
+    public Page<Post> findAll(String query, Integer page, Integer size, String sortDirection, String sortField) {
         log.debug("Attempting find All posts");
-        if (!query.isEmpty()) {
-            var posts = this.postRepository.findBy(query);
-            log.info("Found {} posts", posts.size());
-            return new PageImpl<>(posts, page, posts.size());
-        }
-        var posts = this.postRepository.findAll();
-        log.info("Found {} posts", posts.size());
-        return new PageImpl<>(posts, page, posts.size());
+        var pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.fromString(sortDirection), sortField));
+        return this.postRepository.findByTitleContainingIgnoreCase(query, pageable);
     }
 
     @Override

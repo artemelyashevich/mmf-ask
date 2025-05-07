@@ -52,9 +52,11 @@ public interface PostController {
     )
     @GetMapping
     Page<PostResponseDto> findAll(
-            final @RequestParam(value = "q", required = false, defaultValue = "") String query,
-            final @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            final @RequestParam(value = "size", required = false, defaultValue = "5") Integer size
+            @RequestParam(name = "q", required = false, defaultValue = "") String searchValue,
+            @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+            @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,
+            @RequestParam(name = "sortField", required = false, defaultValue = "createdAt") String sortField
     );
 
     /**

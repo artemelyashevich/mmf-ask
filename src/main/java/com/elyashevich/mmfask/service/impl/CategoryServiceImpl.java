@@ -8,11 +8,13 @@ import com.elyashevich.mmfask.service.CategoryService;
 import com.elyashevich.mmfask.service.converter.impl.CategoryConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -23,8 +25,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryConverter converter;
 
     @Override
-    public List<Category> findAll() {
-        return this.categoryRepository.findAll();
+    public Page<Category> findAll(String query, Integer page, Integer size, String sortDirection, String sortField) {
+        log.debug("Attempting find All posts");
+        var pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.fromString(sortDirection), sortField));
+        return this.categoryRepository.findByNameContainingIgnoreCase(query, pageable);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.entity.Category;
 import com.elyashevich.mmfask.service.contract.CrudService;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface CategoryService extends CrudService<Category> {
      *
      * @return a list of all categories
      */
-    List<Category> findAll();
+    Page<Category> findAll(String query, Integer page, Integer size, String sortDirection, String sortField);
 
     /**
      * Finds a category by name.
