@@ -21,6 +21,9 @@ spring:
             enable: true
     sender:
       email: mmfask2024@gmail.com
+  mvc:
+    async:
+      request-timeout: 30000
 server:
   port: 8222
 

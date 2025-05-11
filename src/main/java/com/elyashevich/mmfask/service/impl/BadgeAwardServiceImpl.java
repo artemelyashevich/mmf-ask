@@ -7,6 +7,7 @@ import com.elyashevich.mmfask.service.BadgeAwardService;
 import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class BadgeAwardServiceImpl implements BadgeAwardService {
 
     private final UserService userService;
     private final BadgeRepository badgeRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     @Transactional
@@ -40,6 +42,10 @@ public class BadgeAwardServiceImpl implements BadgeAwardService {
     }
 
     private void sendBadgeNotification(String userId, Badge badge) {
-        System.out.printf("Пользователь %s получил бейдж: %s%n", userId, badge.getName());
+        messagingTemplate.convertAndSendToUser(
+                userId,
+                "/queue/badges",
+                badge
+        );
     }
 }
