@@ -4,8 +4,6 @@ import com.elyashevich.mmfask.entity.Category;
 import com.elyashevich.mmfask.service.contract.CrudService;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 /**
  * Service interface for managing categories.
  */

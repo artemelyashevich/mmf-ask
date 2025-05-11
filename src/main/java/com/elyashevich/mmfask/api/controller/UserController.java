@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -49,7 +48,7 @@ public interface UserController {
             @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
             @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,
             @RequestParam(name = "sortField", required = false, defaultValue = "createdAt") String sortField
-            );
+    );
 
     @Operation(summary = "Find current user", description = "Get user from jwt claims")
     @ApiResponse(

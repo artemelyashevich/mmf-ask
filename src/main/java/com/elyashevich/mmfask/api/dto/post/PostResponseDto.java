@@ -2,7 +2,6 @@ package com.elyashevich.mmfask.api.dto.post;
 
 import com.elyashevich.mmfask.api.dto.category.CategoryDto;
 import com.elyashevich.mmfask.api.dto.programmingLanguage.ProgrammingLanguageDto;
-import com.elyashevich.mmfask.api.dto.user.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -36,9 +35,9 @@ public record PostResponseDto(
 
         @Schema(
                 description = "Author information",
-                implementation = UserDto.class
+                implementation = UserAggregate.class
         )
-        UserDto creator,
+        UserAggregate creator,
 
         @Schema(
                 description = "Associated programming language details",

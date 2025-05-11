@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class CategoryControllerImpl implements CategoryController {
@@ -24,8 +22,8 @@ public class CategoryControllerImpl implements CategoryController {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public Page<CategoryDto> findAll(String query, Integer page, Integer size, String sortDirection, String sortField)  {
-        var categories = this.categoryService.findAll(query, page, size,sortDirection, sortField);
+    public Page<CategoryDto> findAll(String query, Integer page, Integer size, String sortDirection, String sortField) {
+        var categories = this.categoryService.findAll(query, page, size, sortDirection, sortField);
         return categories.map(this.categoryMapper::toDto);
     }
 

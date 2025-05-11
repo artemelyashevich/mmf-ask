@@ -1,7 +1,6 @@
 package com.elyashevich.mmfask.service;
 
 import com.elyashevich.mmfask.entity.Badge;
-import com.elyashevich.mmfask.entity.BadgeTriggerType;
 
 import java.util.List;
 

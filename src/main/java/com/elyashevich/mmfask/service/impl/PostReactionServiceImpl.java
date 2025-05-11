@@ -1,13 +1,13 @@
 package com.elyashevich.mmfask.service.impl;
 
-import com.elyashevich.mmfask.entity.BadgeTriggerType;
 import com.elyashevich.mmfask.entity.PostReaction;
 import com.elyashevich.mmfask.repository.PostReactionRepository;
-import com.elyashevich.mmfask.service.BadgeAwardService;
 import com.elyashevich.mmfask.service.PostReactionService;
+import com.elyashevich.mmfask.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -18,25 +18,31 @@ import java.util.Map;
 public class PostReactionServiceImpl implements PostReactionService {
 
     private final PostReactionRepository repository;
-    private final BadgeAwardService badgeAwardService;
+    private final PostService postService;
 
+    @Transactional
     public PostReaction.ReactionType toggleReaction(String email, String postId, PostReaction.ReactionType newType) {
         var existing = repository.findByEmailAndPostId(email, postId);
-        var trigger = newType.equals(PostReaction.ReactionType.LIKE)
-                ? BadgeTriggerType.LIKE_QUESTION
-                : BadgeTriggerType.DISLIKE_QUESTION;
+
         if (existing.isPresent()) {
             var current = existing.get();
             if (current.getType() == newType) {
                 repository.delete(current);
-                trigger = trigger.equals(BadgeTriggerType.LIKE_QUESTION) ? BadgeTriggerType.UNLIKE_QUESTION : BadgeTriggerType.UNDISLIKE_QUESTION;
-                this.badgeAwardService.processAction(email, trigger);
+                if (newType.equals(PostReaction.ReactionType.LIKE)) {
+                    this.postService.undoLike(postId);
+                } else {
+                    this.postService.undoDislike(postId);
+                }
                 return null;
             } else {
                 current.setType(newType);
                 current.setCreatedAt(LocalDateTime.now());
                 repository.save(current);
-                this.badgeAwardService.processAction(email, trigger);
+                if (newType.equals(PostReaction.ReactionType.LIKE)) {
+                    this.postService.like(postId);
+                } else {
+                    this.postService.dislike(postId);
+                }
                 return newType;
             }
         } else {
@@ -46,7 +52,11 @@ public class PostReactionServiceImpl implements PostReactionService {
             reaction.setType(newType);
             reaction.setCreatedAt(LocalDateTime.now());
             repository.save(reaction);
-            this.badgeAwardService.processAction(email, trigger);
+            if (newType.equals(PostReaction.ReactionType.LIKE)) {
+                this.postService.like(postId);
+            } else {
+                this.postService.dislike(postId);
+            }
             return newType;
         }
     }

@@ -27,6 +27,8 @@ spring:
 server:
   port: 8222
 
+logging.level.org.springframework.web: DEBUG
+
 application:
   admin:
     password: adminPassword
@@ -41,3 +43,7 @@ logging:
       springframework:
         web:
           cors: DEBUG
+
+    com:
+      elyashevich:
+        testloglevel: DEBUG

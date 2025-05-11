@@ -53,7 +53,7 @@ public class ResumeServiceImpl implements ResumeService {
         var programingLanguages = entity.getProgrammingLanguages().stream()
                 .map(it -> this.programmingLanguageService.findById(it.getId()))
                 .collect(Collectors.toSet());
-        var level = (Long)this.postService.findAllByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+        var level = (Long) this.postService.findAllByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName())
                 .stream()
                 .map(Post::getViews)
                 .reduce(Long::sum)

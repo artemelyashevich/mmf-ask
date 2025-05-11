@@ -3,7 +3,6 @@ package com.elyashevich.mmfask.service;
 import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.service.contract.CrudService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -71,6 +70,14 @@ public interface PostService extends CrudService<Post> {
      * @throws Exception if an error occurs during file upload
      */
     Post uploadFile(final String id, final MultipartFile[] files) throws Exception;
+
+    void like(final String id);
+
+    void undoLike(final String id);
+
+    void dislike(final String id);
+
+    void undoDislike(final String id);
 
     List<Post> findAllByUserEmail(String userEmail);
 }

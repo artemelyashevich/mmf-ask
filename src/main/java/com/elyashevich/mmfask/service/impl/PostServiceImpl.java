@@ -1,6 +1,7 @@
 package com.elyashevich.mmfask.service.impl;
 
 import com.elyashevich.mmfask.entity.AttachmentImage;
+import com.elyashevich.mmfask.entity.BadgeTriggerType;
 import com.elyashevich.mmfask.entity.Post;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.PostRepository;
@@ -14,9 +15,9 @@ import com.elyashevich.mmfask.service.converter.impl.PostConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,11 +58,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Post findById(final String id) {
-        return this.postRepository.findById(id)
+        var post = this.postRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Post with id = %s was not found.".formatted(id))
                 );
+        post.setViews(post.getViews() + 1);
+        this.postRepository.save(post);
+        return post;
     }
 
     @Transactional
@@ -71,7 +76,7 @@ public class PostServiceImpl implements PostService {
 
         dto.setAttachmentImages(new HashSet<>());
         var post = this.postRepository.save(this.setDataToDto(dto));
-
+        this.badgeAwardService.processAction(post.getCreator().getId(), BadgeTriggerType.QUESTION_POSTED);
         log.info("Post with name '{}' has been created.", dto.getTitle());
         return post;
     }
@@ -87,6 +92,49 @@ public class PostServiceImpl implements PostService {
 
         log.info("Post with ID '{}' has been updated.", dto.getId());
         return updatedPost;
+    }
+
+    @Transactional
+    @Override
+    public void like(final String id) {
+        var post = this.findById(id);
+        post.setLikes(post.getLikes() + 1);
+        this.badgeAwardService.processAction(post.getCreator().getId(), BadgeTriggerType.LIKE_QUESTION);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void undoLike(final String id) {
+        var post = this.findById(id);
+        if (post.getLikes() == 0) {
+            throw new RuntimeException("");
+        }
+        post.setLikes(post.getLikes() - 1);
+        this.postRepository.save(post);
+        this.badgeAwardService.processAction(post.getCreator().getId(), BadgeTriggerType.UNLIKE_QUESTION);
+    }
+
+    @Transactional
+    @Override
+    public void dislike(final String id) {
+        var post = this.findById(id);
+        post.setDislikes(post.getDislikes() + 1);
+        this.badgeAwardService.processAction(post.getCreator().getId(), BadgeTriggerType.DISLIKE_QUESTION);
+        this.postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void undoDislike(final String id) {
+        var post = this.findById(id);
+        if (post.getDislikes() == 0) {
+            throw new RuntimeException("");
+        }
+        post.setDislikes(post.getDislikes() - 1);
+        this.badgeAwardService.processAction(post.getCreator().getId(), BadgeTriggerType.UNDISLIKE_QUESTION);
+        this.postRepository.save(post);
+
     }
 
     @Override
@@ -135,7 +183,7 @@ public class PostServiceImpl implements PostService {
                 .map(category -> this.categoryService.findByName(category.getName()))
                 .collect(Collectors.toSet());
         var programmingLanguage = this.programmingLanguageService.findByName(dto.getProgrammingLanguage().getName());
-        var user = this.userService.findByEmail(dto.getCreator().getEmail());
+        var user = this.userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         dto.setCategories(categories);
         dto.setProgrammingLanguage(programmingLanguage);
         dto.setCreator(user);

@@ -8,6 +8,7 @@ import com.elyashevich.mmfask.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class BadgeAwardServiceImpl implements BadgeAwardService {
     @Transactional
     public void processAction(String email, BadgeTriggerType triggerType) {
 
-        var user = this.userService.findByEmail(email);
+        var user = this.userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         user.getStats().merge(triggerType.name(), 1, Integer::sum);
 
         var badgesToChek = this.badgeRepository.findByTriggerType(triggerType);
@@ -32,7 +33,6 @@ public class BadgeAwardServiceImpl implements BadgeAwardService {
         var currentCount = user.getStats().getOrDefault(triggerType.name(), 0);
 
         badgesToChek.forEach(badge -> {
-
             if (currentCount >= badge.getConditionValue() && !user.getBadges().contains(badge)) {
                 user.getBadges().add(badge);
                 this.userService.updateBadges(user);

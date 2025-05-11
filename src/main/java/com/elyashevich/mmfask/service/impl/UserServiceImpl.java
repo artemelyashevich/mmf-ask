@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Page<User> findAll(String query, Integer page, Integer size, String sortDirection, String sortField) {
         var pageable = PageRequest.of(page, size,
-                Sort.by(Sort.Direction.fromString(sortDirection),sortField));
+                Sort.by(Sort.Direction.fromString(sortDirection), sortField));
         return this.userRepository.findByEmailContainingIgnoreCase(query, pageable);
     }
 
