@@ -3,6 +3,7 @@ package com.elyashevich.mmfask.api.controller;
 import com.elyashevich.mmfask.api.dto.post.PostRequestDto;
 import com.elyashevich.mmfask.api.dto.post.PostResponseDto;
 import com.elyashevich.mmfask.api.dto.post.PostStatisticsDto;
+import com.elyashevich.mmfask.entity.PostReaction;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -76,22 +78,6 @@ public interface PostController {
     )
     @GetMapping("/{id}")
     PostResponseDto findById(final @PathVariable("id") String id);
-
-    @PostMapping("/{id}/like")
-    @ResponseStatus(HttpStatus.CREATED)
-    void like(final @PathVariable("id") String id);
-
-    @DeleteMapping("/{id}/like")
-    @ResponseStatus(HttpStatus.CREATED)
-    void undoLike(final @PathVariable("id") String id);
-
-    @PostMapping("/{id}/dislike")
-    @ResponseStatus(HttpStatus.CREATED)
-    void dislike(final @PathVariable("id") String id);
-
-    @DeleteMapping("/{id}/dislike")
-    @ResponseStatus(HttpStatus.CREATED)
-    void undoDislike(final @PathVariable("id") String id);
 
     /**
      * Create a new post.
@@ -186,4 +172,13 @@ public interface PostController {
 
     @GetMapping("/statistics")
     PostStatisticsDto findStatistics();
+
+    @PostMapping("/{postId}/reaction")
+    ResponseEntity<?> toggleReaction(
+            @PathVariable String postId,
+            @RequestParam PostReaction.ReactionType type);
+
+    @GetMapping("/{postId}/reaction/status")
+    ResponseEntity<?> getReactionStatus(
+            @PathVariable String postId);
 }

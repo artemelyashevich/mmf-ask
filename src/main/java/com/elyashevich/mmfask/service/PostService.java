@@ -72,13 +72,5 @@ public interface PostService extends CrudService<Post> {
      */
     Post uploadFile(final String id, final MultipartFile[] files) throws Exception;
 
-    void like(final String id);
-
-    void undoLike(final String id);
-
-    void dislike(final String id);
-
-    void undoDislike(final String id);
-
     List<Post> findAllByUserEmail(String userEmail);
 }
