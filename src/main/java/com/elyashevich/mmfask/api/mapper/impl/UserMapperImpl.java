@@ -17,6 +17,8 @@ public class UserMapperImpl implements UserMapper {
                 entity.getId(),
                 entity.getEmail(),
                 ImageUtil.generatePath(entity.getImage()),
+                entity.getStats(),
+                entity.getBadges(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

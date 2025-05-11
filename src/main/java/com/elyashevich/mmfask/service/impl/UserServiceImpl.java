@@ -217,6 +217,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
+    public void updateBadges(User user) {
+        var oldUser = this.findById(user.getId());
+        oldUser.setBadges(user.getBadges());
+        oldUser.setStats(user.getStats());
+        this.userRepository.save(oldUser);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
         var user = this.findByEmail(email);
         return new org.springframework.security.core.userdetails.User(

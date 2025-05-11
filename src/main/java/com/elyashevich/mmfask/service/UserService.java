@@ -100,4 +100,6 @@ public interface UserService {
     User update(final String email, final User entity) throws MessagingException;
 
     User updateEmail(final String email, final UserDto userDto, final String code);
+
+    void updateBadges(User user);
 }

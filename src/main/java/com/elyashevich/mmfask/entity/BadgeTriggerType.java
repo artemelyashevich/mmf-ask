@@ -1,0 +1,14 @@
+package com.elyashevich.mmfask.entity;
+
+public enum BadgeTriggerType {
+    QUESTION_POSTED,
+    LIKE_QUESTION,
+    UNLIKE_QUESTION,
+    UNDISLIKE_QUESTION,
+    DISLIKE_QUESTION,
+    ANSWER_POSTED,
+    ANSWER_ACCEPTED,
+    VOTE_RECEIVED,
+    PROFILE_COMPLETED,
+    DAILY_LOGIN_STREAK
+}

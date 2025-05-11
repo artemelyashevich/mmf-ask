@@ -79,23 +79,19 @@ public interface PostController {
 
     @PostMapping("/{id}/like")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("#email == authentication.principal")
-    void like(final @PathVariable("id") String id, final @RequestParam("email") String email);
+    void like(final @PathVariable("id") String id);
 
     @DeleteMapping("/{id}/like")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("#email == authentication.principal")
-    void undoLike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+    void undoLike(final @PathVariable("id") String id);
 
     @PostMapping("/{id}/dislike")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("#email == authentication.principal")
-    void dislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+    void dislike(final @PathVariable("id") String id);
 
     @DeleteMapping("/{id}/dislike")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("#email == authentication.principal")
-    void undoDislike(final @PathVariable("id") String id, final @RequestParam("email") String email);
+    void undoDislike(final @PathVariable("id") String id);
 
     /**
      * Create a new post.

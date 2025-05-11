@@ -16,6 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -41,6 +45,11 @@ public class User {
     private AttachmentImage image;
 
     private String activationCode;
+
+    @DBRef
+    private List<Badge> badges = new ArrayList<>();
+
+    private Map<String, Integer> stats = new HashMap<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

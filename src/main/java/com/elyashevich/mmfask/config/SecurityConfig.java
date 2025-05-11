@@ -58,6 +58,7 @@ public class SecurityConfig {
                                         "/v3/api-docs/swagger-config"
                                 ).permitAll()
                                 .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_GUEST)
+                                .requestMatchers(HttpMethod.POST, "api/v1/badges/**").hasRole(ROLE_ADMIN)
                                 .requestMatchers("/api/v1/users/current").authenticated()
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
                                 .requestMatchers("api/v1/favorites/**").hasRole(ROLE_USER)

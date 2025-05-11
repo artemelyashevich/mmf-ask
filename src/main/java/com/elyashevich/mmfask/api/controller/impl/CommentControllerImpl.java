@@ -4,6 +4,8 @@ import com.elyashevich.mmfask.api.controller.CommentController;
 import com.elyashevich.mmfask.api.dto.comment.CommentRequestDto;
 import com.elyashevich.mmfask.api.dto.comment.CommentResponseDto;
 import com.elyashevich.mmfask.api.mapper.CommentMapper;
+import com.elyashevich.mmfask.entity.BadgeTriggerType;
+import com.elyashevich.mmfask.service.BadgeAwardService;
 import com.elyashevich.mmfask.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +22,7 @@ public class CommentControllerImpl implements CommentController {
 
     private final CommentService commentService;
     private final CommentMapper commentMapper;
+    private final BadgeAwardService badgeAwardService;
 
     @Override
     public List<CommentResponseDto> findAll(
@@ -42,6 +45,7 @@ public class CommentControllerImpl implements CommentController {
             final @RequestParam("email") String email
     ) {
         var comment = this.commentService.create(dto, email);
+        this.badgeAwardService.processAction(email, BadgeTriggerType.ANSWER_POSTED);
         return commentMapper.toResponseDto(comment);
     }
 
