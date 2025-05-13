@@ -68,6 +68,7 @@ public class TokenUtil {
                 .compact();
     }
 
+    @SuppressWarnings("unused")
     public static boolean validate(final String token) {
         return !getClaimsFromToken(token).getSubject().isEmpty()
                 || getClaimsFromToken(token).getExpiration().before(new Date());
