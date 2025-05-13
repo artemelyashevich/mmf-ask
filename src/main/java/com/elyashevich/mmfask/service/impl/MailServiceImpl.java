@@ -3,6 +3,7 @@ package com.elyashevich.mmfask.service.impl;
 import com.elyashevich.mmfask.service.MailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,6 +23,7 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
 
+    @Setter
     @Value("${spring.mail.sender.email}")
     private String senderEmail;
 

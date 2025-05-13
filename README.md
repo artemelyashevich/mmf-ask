@@ -1,6 +1,6 @@
 # MMFASK Web API
 
-This project is simulating a stackoverflow system using the Spring
+This project simulates a stackoverflow system using the Spring
 framework.
 
 ## Project Setup
