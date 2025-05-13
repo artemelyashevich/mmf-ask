@@ -27,7 +27,7 @@ spring:
 server:
   port: 8222
 
-logging.level.org.springframework.web: DEBUG
+#logging.level.org.springframework.web: DEBUG
 
 application:
   admin:
@@ -44,6 +44,15 @@ logging:
         web:
           cors: DEBUG
 
-    com:
-      elyashevich:
-        testloglevel: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  metrics:
+    tags:
+      application: mmf-ask-app
+  prometheus:
+    metrics:
+      export:
+        enabled: true

@@ -28,3 +28,33 @@ services:
       SPRING_MAIL_USERNAME: mmfask2024@gmail.com
       SPRING_MAIL_PASSWORD: syvg ndjv wvdb tjlp
       SPRING_MAIL_SENDER_EMAIL: mmfask2024@gmail.com
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_DATASOURCE_PROMETHEUS_URL=http://prometheus:9090
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+volumes:
+  grafana-storage:
+
+networks:
+  monitoring:

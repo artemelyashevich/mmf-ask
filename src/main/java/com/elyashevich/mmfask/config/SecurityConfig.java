@@ -56,13 +56,15 @@ public class SecurityConfig {
                                         "/swagger/*",
                                         "/v3/api-docs",
                                         "/v3/api-docs/swagger-config",
-                                        "/ws/**"
+                                        "/ws/**",
+                                        "/actuator/**"
                                 ).permitAll()
                                 .requestMatchers(HttpMethod.POST, "api/v1/users/**").hasRole(ROLE_GUEST)
                                 .requestMatchers(HttpMethod.POST, "api/v1/badges/**").hasRole(ROLE_ADMIN)
                                 .requestMatchers("/api/v1/users/current").authenticated()
                                 .requestMatchers("api/v1/posts/**").hasRole(ROLE_USER)
                                 .requestMatchers("api/v1/favorites/**").hasRole(ROLE_USER)
+                                .requestMatchers("api/v1/chats/**").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/auth/reset-password/*").hasRole(ROLE_USER)
                                 .requestMatchers(HttpMethod.POST, "api/v1/categories").hasRole(ROLE_MODERATOR)
                                 .requestMatchers(HttpMethod.GET, "api/v1/posts/statistics").permitAll()
