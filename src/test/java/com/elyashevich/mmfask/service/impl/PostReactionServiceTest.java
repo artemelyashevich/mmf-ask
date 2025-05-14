@@ -9,6 +9,7 @@ import com.elyashevich.mmfask.repository.PostRepository;
 import com.elyashevich.mmfask.repository.ProgrammingLanguageRepository;
 import com.elyashevich.mmfask.repository.UserRepository;
 import com.elyashevich.mmfask.service.BaseIntegrationTest;
+import com.elyashevich.mmfask.service.PostReactionService;
 import com.elyashevich.mmfask.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PostReactionServiceTest extends BaseIntegrationTest {
 
     @Autowired
-    private PostReactionServiceImpl postReactionService;
+    private PostReactionService postReactionService;
 
     @Autowired
     private PostReactionRepository postReactionRepository;

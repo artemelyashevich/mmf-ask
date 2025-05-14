@@ -11,7 +11,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mockStatic;
 
 
 class SafetyExtractEmailUtilTest {

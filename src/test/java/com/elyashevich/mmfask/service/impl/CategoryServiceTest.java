@@ -5,6 +5,7 @@ import com.elyashevich.mmfask.exception.ResourceAlreadyExistsException;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.CategoryRepository;
 import com.elyashevich.mmfask.service.BaseIntegrationTest;
+import com.elyashevich.mmfask.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryServiceTest extends BaseIntegrationTest {
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     @Autowired
     private CategoryRepository categoryRepository;
