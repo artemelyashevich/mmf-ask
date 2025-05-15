@@ -4,6 +4,7 @@ import com.elyashevich.mmfask.entity.Badge;
 import com.elyashevich.mmfask.entity.BadgeTriggerType;
 import com.elyashevich.mmfask.exception.ResourceNotFoundException;
 import com.elyashevich.mmfask.repository.BadgeRepository;
+import com.elyashevich.mmfask.service.BadgeService;
 import com.elyashevich.mmfask.service.BaseIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BadgeServiceTest extends BaseIntegrationTest {
 
     @Autowired
-    private BadgeServiceImpl badgeService;
+    private BadgeService badgeService;
 
     @Autowired
     private BadgeRepository badgeRepository;

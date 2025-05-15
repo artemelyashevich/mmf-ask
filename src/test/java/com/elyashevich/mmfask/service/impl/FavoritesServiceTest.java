@@ -10,9 +10,7 @@ import com.elyashevich.mmfask.repository.FavoritesRepository;
 import com.elyashevich.mmfask.repository.PostRepository;
 import com.elyashevich.mmfask.repository.ProgrammingLanguageRepository;
 import com.elyashevich.mmfask.repository.UserRepository;
-import com.elyashevich.mmfask.service.BaseIntegrationTest;
-import com.elyashevich.mmfask.service.PostService;
-import com.elyashevich.mmfask.service.UserService;
+import com.elyashevich.mmfask.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FavoritesServiceTest extends BaseIntegrationTest {
 
     @Autowired
-    private FavoritesServiceImpl favoritesService;
+    private FavoritesService favoritesService;
 
     @Autowired
     private UserService userService;
@@ -51,7 +49,7 @@ class FavoritesServiceTest extends BaseIntegrationTest {
     private ProgrammingLanguageRepository programmingLanguageRepository;
 
     @Autowired
-    private ProgrammingLanguageServiceImpl programmingLanguageService;
+    private ProgrammingLanguageService programmingLanguageService;
 
     @BeforeEach
     void setUp() {

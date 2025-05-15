@@ -33,10 +33,8 @@ public class Resume {
     @DBRef
     private Set<Category> categories = new HashSet<>();
 
-    @DBRef
     private Integer experienceInYears = 0;
 
-    @DBRef
     private Integer level = 0;
 
     @Override
